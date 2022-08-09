@@ -99,4 +99,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: dl-frontend-${{ steps.clean_version.outputs._1 }}
-          path: /dist
+          path: dist
