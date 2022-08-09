@@ -13,14 +13,10 @@ on:
         required: true
 
 jobs:
-  integration:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node: [12]
-    runs-on: ${{ matrix.os }}
-
+  ci:
+    runs-on: ubuntu-latest
     steps:
+      
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -32,13 +28,13 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v1.4.3
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 16
 
       - name: Cache node_modules
         uses: actions/cache@v2.1.0
         with:
           path: node_modules
-          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+          key: ubuntu-latest-node-v16-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
