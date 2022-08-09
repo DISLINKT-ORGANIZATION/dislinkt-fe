@@ -87,12 +87,12 @@ jobs:
           push: true
           secrets: |
             GIT_AUTH_TOKEN = ${{ secrets.GITHUB_TOKEN }}
-          tags: ${{ secrets.DOCKER_USERNAME }}/dl-account-service:${{ steps.clean_version.outputs._1 }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/dl-frontend:${{ steps.clean_version.outputs._1 }}
 
       - name: Upload image
         uses: ishworkh/docker-image-artifact-upload@v1
         with:
-          image: ${{ secrets.DOCKER_USERNAME }}/dl-account-service:${{ steps.clean_version.outputs._1 }}
+          image: ${{ secrets.DOCKER_USERNAME }}/dl-frontend:${{ steps.clean_version.outputs._1 }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
