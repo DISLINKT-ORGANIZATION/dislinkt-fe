@@ -46,25 +46,28 @@
                     @click:append="showPassword = !showPassword"
                   />
                 </v-row>
+                <v-row>
+                  <v-col class="mt-6">
+                    <v-btn
+                      color="main-screen"
+                      @click="login()"
+                      block
+                      class="description"
+                      style="font-size: 15px"
+                      :loading="loading"
+                      ><b>Log in</b></v-btn
+                    >
+                  </v-col>
+                </v-row>
               </v-form>
-              <v-row>
-                <v-col class="mt-6">
-                  <v-btn
-                    color="main-screen"
-                    @click="login()"
-                    block
-                    class="description"
-                    style="font-size: 15px"
-                    :loading="loading"
-                    ><b>Log in</b></v-btn
-                  >
-                </v-col>
-              </v-row>
               <v-row align="center" justify="center" class="pt-5">
                 <router-link
                   :to="{ name: 'RegisterView' }"
                   style="text-decoration: none"
-                  ><p class="description" style="font-size: 20px; color:#666bff">
+                  ><p
+                    class="description"
+                    style="font-size: 20px; color: #666bff"
+                  >
                     Don't have an account? Sign up
                   </p></router-link
                 >
@@ -78,7 +81,6 @@
 </template>
 
 <script>
-
 export default {
   name: "LoginForm",
 
@@ -112,7 +114,7 @@ export default {
         return;
       }
       // axios call
-      this.$router.push({ name: "HomeUserView" });
+      this.$router.push({ name: "HomeView" });
     },
   },
 };

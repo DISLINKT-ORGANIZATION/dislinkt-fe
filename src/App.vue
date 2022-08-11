@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import snackbar from "@/components/SnackBar.vue";
+import snackbar from "@/components/snack/SnackBar.vue";
 
 export default {
   name: "App",
