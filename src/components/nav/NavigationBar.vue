@@ -37,7 +37,7 @@
           </v-list-item>
         </router-link>
         <router-link
-          :to="{ name: 'Home' }"
+          :to="{ name: 'AccountView' }"
           v-slot="{ navigate }"
         >
           <v-list-item @click="navigate">
@@ -50,7 +50,7 @@
           </v-list-item>
         </router-link>
         <router-link
-          :to="{ name: 'Home' }"
+          :to="{ name: 'ResumeView' }"
           v-slot="{ navigate }"
         >
           <v-list-item @click="navigate">

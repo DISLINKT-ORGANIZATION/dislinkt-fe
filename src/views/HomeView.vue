@@ -4,7 +4,7 @@
       <navigation-bar></navigation-bar>
     </v-navigation-drawer>
 
-    <v-app-bar app color="#666bff">
+    <v-app-bar app color="#8C9EFF">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title class="description" style="font-size: 25px"
