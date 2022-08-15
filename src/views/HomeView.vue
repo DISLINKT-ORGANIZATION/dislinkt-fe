@@ -14,9 +14,11 @@
       <v-btn class="ml-3" icon @click="checkRequests()">
         <v-icon>mdi-account-outline</v-icon>
       </v-btn>
-      <v-btn class="ml-3" icon>
-        <v-icon>mdi-message-outline</v-icon>
-      </v-btn>
+      <router-link :to="{ name: 'ChatView' }" v-slot="{ navigate }">
+        <v-btn class="ml-3" icon @click="navigate">
+          <v-icon>mdi-message-outline</v-icon>
+        </v-btn>
+      </router-link>
       <v-btn class="ml-3" icon @click="logout()">
         <v-icon>mdi-logout</v-icon>
       </v-btn>
@@ -34,7 +36,7 @@ const apiURL = "auth-service/authentication/users/";
 export default {
   name: "HomeView",
   components: {
-    NavigationBar,
+    NavigationBar
   },
   data() {
     return {

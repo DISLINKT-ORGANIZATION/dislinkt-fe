@@ -14,6 +14,7 @@ import ExploreConnectionsView from "@/views/connections/ExploreConnectionsView.v
 import MyConnectionsView from "@/views/connections/MyConnectionsView.vue";
 import BlockedConnectionsView from "@/views/connections/BlockedConnectionsView.vue";
 import ConnectionRequestsView from "@/views/connections/ConnectionRequestsView.vue";
+import ChatView from "@/views/ChatView.vue";
 
 Vue.use(VueRouter);
 
@@ -85,10 +86,13 @@ const routes = [
         name: "ConnectionRequestsView",
         path: "/connection-requests",
       },
-
+      {
+        component: ChatView,
+        name: "ChatView",
+        path: "/chat"
+      }
     ]
   },
-  
 ];
 
 const router = new VueRouter({
