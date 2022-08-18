@@ -1,10 +1,14 @@
 <template>
-  <v-app>
+  <v-container class="container" fluid>
     <v-navigation-drawer v-model="drawer" app>
       <navigation-bar v-bind:user="user"></navigation-bar>
     </v-navigation-drawer>
 
+<<<<<<< HEAD
     <v-app-bar app color="#8C9EFF">
+=======
+    <v-app-bar color="indigo accent-1" app>
+>>>>>>> ef8023e (feat: chat template looks nice)
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title class="description" style="font-size: 25px"
@@ -23,10 +27,12 @@
         <v-icon>mdi-logout</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-main class="blue-grey lighten-5">
-      <router-view></router-view>
+    <v-main class="blue-grey lighten-5 content"> 
+      <v-container fluid class="main-container"> 
+        <router-view></router-view>
+      </v-container>
     </v-main>
-  </v-app>
+  </v-container>
 </template>
 
 <script>
@@ -36,7 +42,7 @@ const apiURL = "auth-service/authentication/users/";
 export default {
   name: "HomeView",
   components: {
-    NavigationBar
+    NavigationBar,
   },
   data() {
     return {
@@ -76,7 +82,19 @@ export default {
 
 <style scoped>
 .container {
-  height: 100% !important;
+  height: 100%;
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+}
+
+.content {
+  height: 100%;
+}
+
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .description {
