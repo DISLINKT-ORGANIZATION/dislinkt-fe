@@ -15,6 +15,7 @@ import MyConnectionsView from "@/views/connections/MyConnectionsView.vue";
 import BlockedConnectionsView from "@/views/connections/BlockedConnectionsView.vue";
 import ConnectionRequestsView from "@/views/connections/ConnectionRequestsView.vue";
 import ChatView from "@/views/ChatView.vue";
+import ChatRoom from "@/components/chat/ChatRoom.vue";
 
 Vue.use(VueRouter);
 
@@ -89,10 +90,18 @@ const routes = [
       {
         component: ChatView,
         name: "ChatView",
-        path: "/chat"
-      }
+        path: "/chat",
+        children: [
+          {
+            component: ChatRoom,
+            name: "ChatRoom",
+            props: true,
+            path: "/chat/:chatId",
+          },
+        ],
+      },
     ]
-  },
+  }
 ];
 
 const router = new VueRouter({
