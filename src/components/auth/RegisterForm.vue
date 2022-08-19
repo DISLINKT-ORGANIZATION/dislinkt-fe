@@ -170,6 +170,8 @@
 </template>
 
 <script>
+const apiURL = "auth-service/authentication/register-user";
+
 export default {
   name: "RegisterForm",
 
@@ -215,7 +217,6 @@ export default {
   methods: {
     register: function () {
       this.user.birthDate = this.convertToLong(this.birthDate);
-      console.log(this.user);
       this.loading = true;
       this.$refs.form.validate();
       if (!this.valid) {
@@ -226,12 +227,32 @@ export default {
         this.loading = false;
         return;
       }
-      // todo: axios call
+      console.log(this.user);
+      const postUser = Object.assign({}, this.user);
+      postUser.gender = postUser.gender - 1;
+      this.axios
+        .post(apiURL, postUser)
+        .then((response) => {
+          this.loading = false;
+          this.$root.snackbar.success(
+            "You've successfully registered your account"
+          );
+          this.$refs.form.reset();
+          console.log(response);
+        })
+        .catch((error) => {
+          this.loading = false;
+          if (error.response.data) {
+            this.$root.snackbar.error(error.response.data);
+          } else {
+            this.$root.snackbar.error();
+          }
+        });
     },
-    convertToLong: function(dateStr) {
+    convertToLong: function (dateStr) {
       let date = new Date(dateStr);
       return date.getTime();
-    }
+    },
   },
 };
 </script>

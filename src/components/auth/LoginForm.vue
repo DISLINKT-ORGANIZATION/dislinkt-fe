@@ -82,8 +82,6 @@
 
 <script>
 const apiURL = "auth-service/authentication/login";
-// const apiURL = "http://localhost:8082/authentication/login";
-// const apiURL = "http://localhost:8081/auth-service/authentication/login";
 export default {
   name: "LoginForm",
 
