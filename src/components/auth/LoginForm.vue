@@ -116,7 +116,8 @@ export default {
       }).then((response) => {
         let loggedInUser = {
           id: response.data.id,
-          role: response.data.role
+          role: response.data.role,
+          token: response.data.token
         }
         localStorage.setItem("role", response.data.role);
         localStorage.setItem(
