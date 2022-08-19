@@ -11,7 +11,7 @@ const routes = [
   {
     component: LoginView,
     name: "LoginView",
-    path: "/",
+    path: "/login",
   },
   {
     component: RegisterView,
@@ -21,7 +21,8 @@ const routes = [
   {
     component: HomeView,
     name: "HomeView",
-    path: "/home"
+    path: "/",
+    beforeEnter: guardRouteLoggedIn
   }
 ];
 
@@ -30,5 +31,30 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
+
+function guardRouteLoggedIn(to, from, next) {
+  let user = JSON.parse(localStorage.getItem("user"));
+  if (!user || user["token"] === undefined) next("/login");
+  else next(); // allow to enter the route
+}
+
+// function guardRouteAdmin(to, from, next) {
+//   let user = JSON.parse(localStorage.getItem("user"));
+//   if (user["role"] === "ROLE_ADMIN") next();
+// }
+
+// function guardRouteUser(to, from, next) {
+//   let user = JSON.parse(localStorage.getItem("user"));
+//   if (user["role"] === "ROLE_USER") next();
+// }
+
+// function guardNotFound(to, from, next) {
+//   let user = JSON.parse(localStorage.getItem("user"));
+//   if (!user || user["token"] === undefined) next("/");
+//   else {
+//     if (user["role"] === "ROLE_USER") next({ name: "HomeUserView" });
+//     else next({ name: "HomeAdminView" });
+//   }
+// }
 
 export default router;
