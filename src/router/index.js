@@ -4,6 +4,8 @@ import VueRouter from "vue-router";
 import LoginView from "@/views/auth/LoginView.vue";
 import RegisterView from "@/views/auth/RegisterView.vue";
 import HomeView from "@/views/HomeView.vue";
+import AccountView from "@/views/user/AccountView.vue";
+import ResumeView from "@/views/user/ResumeView.vue";
 
 Vue.use(VueRouter);
 
@@ -22,8 +24,21 @@ const routes = [
     component: HomeView,
     name: "HomeView",
     path: "/",
-    beforeEnter: guardRouteLoggedIn
-  }
+    beforeEnter: guardRouteLoggedIn,
+    children: [
+      {
+        component: AccountView,
+        name: "AccountView",
+        path: "/account"
+      },
+      {
+        component: ResumeView,
+        name: "ResumeView",
+        path: "/resume"
+      }
+    ]
+  },
+  
 ];
 
 const router = new VueRouter({
@@ -33,26 +48,28 @@ const router = new VueRouter({
 });
 
 function guardRouteLoggedIn(to, from, next) {
-  let user = JSON.parse(localStorage.getItem("user"));
-  if (!user || user["token"] === undefined) next("/login");
+  let userId = localStorage.getItem("id");
+  let token = localStorage.getItem("token");
+  if (!userId || !token) next("/login");
   else next(); // allow to enter the route
 }
 
 // function guardRouteAdmin(to, from, next) {
-//   let user = JSON.parse(localStorage.getItem("user"));
-//   if (user["role"] === "ROLE_ADMIN") next();
+//   let userRole = localStorage.getItem("role");
+//   if (userRole === "ROLE_ADMIN") next();
 // }
 
 // function guardRouteUser(to, from, next) {
-//   let user = JSON.parse(localStorage.getItem("user"));
-//   if (user["role"] === "ROLE_USER") next();
+//   let userRole = localStorage.getItem("role");
+//   if (userRole === "ROLE_USER") next();
 // }
 
 // function guardNotFound(to, from, next) {
-//   let user = JSON.parse(localStorage.getItem("user"));
-//   if (!user || user["token"] === undefined) next("/");
+//   let userRole = localStorage.getItem("role");
+//   let token = localStorage.getItem("token");
+//   if (!userRole || !token) next("/");
 //   else {
-//     if (user["role"] === "ROLE_USER") next({ name: "HomeUserView" });
+//     if (userRole === "ROLE_USER") next({ name: "HomeUserView" });
 //     else next({ name: "HomeAdminView" });
 //   }
 // }
