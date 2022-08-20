@@ -112,32 +112,26 @@ export default {
       this.axios({
         url: apiURL,
         method: "POST",
-        data: this.user
-      }).then((response) => {
-        let loggedInUser = {
-          id: response.data.id,
-          role: response.data.role,
-          token: response.data.token
-        }
-        localStorage.setItem("role", response.data.role);
-        localStorage.setItem(
-          "authKey",
-          "Bearer " + response.data.token
-        );
-        localStorage.setItem("user", JSON.stringify(loggedInUser));
-        this.axios.defaults.headers["Authorization"] = "Bearer " + response.data.token;
-        this.loading = false;
-        this.$router.push({ name: "HomeView" });
-      }).catch((error) => {
-        this.loading = false;
-        if (error.response.status === 401) {
-          this.$root.snackbar.error("Invalid credentials");
-        } else {
-          this.$root.snackbar.error(error.response.data.message);
-        }
-        this.$refs.form.reset();
+        data: this.user,
       })
-      
+        .then((response) => {
+          localStorage.setItem("id", response.data.id);
+          localStorage.setItem("role", response.data.role);
+          localStorage.setItem("token", response.data.token);
+          this.axios.defaults.headers["Authorization"] =
+            "Bearer " + response.data.token;
+          this.loading = false;
+          this.$router.push({ name: "HomeView" });
+        })
+        .catch((error) => {
+          this.loading = false;
+          if (error.response.status === 400) {
+            this.$root.snackbar.error("Invalid credentials");
+          } else {
+            this.$root.snackbar.error(error.response.data.message);
+          }
+          this.$refs.form.reset();
+        });
     },
   },
 };

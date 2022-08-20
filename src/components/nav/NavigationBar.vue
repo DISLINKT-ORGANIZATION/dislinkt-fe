@@ -12,10 +12,10 @@
       <v-list-item link>
         <v-list-item-content>
           <v-list-item-title class="description d-flex justify-center" style="font-size: 25px">
-            Natasa Ivanovic
+            {{user.firstName}} {{user.lastName}}
           </v-list-item-title>
           <v-list-item-subtitle class="description d-flex justify-center" style="font-size: 18px">
-            @naca-faca
+            @{{user.username}}
           </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
@@ -125,8 +125,10 @@
 export default {
   data: () => ({
     selectedItem: null,
-    // user: JSON.parse(localStorage["user"]),
   }),
+  props: {
+    user: Object,
+  },
 };
 </script>
 

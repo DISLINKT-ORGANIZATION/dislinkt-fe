@@ -48,26 +48,28 @@ const router = new VueRouter({
 });
 
 function guardRouteLoggedIn(to, from, next) {
-  let user = JSON.parse(localStorage.getItem("user"));
-  if (!user || user["token"] === undefined) next("/login");
+  let userId = localStorage.getItem("id");
+  let token = localStorage.getItem("token");
+  if (!userId || !token) next("/login");
   else next(); // allow to enter the route
 }
 
 // function guardRouteAdmin(to, from, next) {
-//   let user = JSON.parse(localStorage.getItem("user"));
-//   if (user["role"] === "ROLE_ADMIN") next();
+//   let userRole = localStorage.getItem("role");
+//   if (userRole === "ROLE_ADMIN") next();
 // }
 
 // function guardRouteUser(to, from, next) {
-//   let user = JSON.parse(localStorage.getItem("user"));
-//   if (user["role"] === "ROLE_USER") next();
+//   let userRole = localStorage.getItem("role");
+//   if (userRole === "ROLE_USER") next();
 // }
 
 // function guardNotFound(to, from, next) {
-//   let user = JSON.parse(localStorage.getItem("user"));
-//   if (!user || user["token"] === undefined) next("/");
+//   let userRole = localStorage.getItem("role");
+//   let token = localStorage.getItem("token");
+//   if (!userRole || !token) next("/");
 //   else {
-//     if (user["role"] === "ROLE_USER") next({ name: "HomeUserView" });
+//     if (userRole === "ROLE_USER") next({ name: "HomeUserView" });
 //     else next({ name: "HomeAdminView" });
 //   }
 // }

@@ -7,7 +7,7 @@
         :active="show"
       ></v-progress-linear>
     </v-row>
-    <v-form v-model="valid" ref="form" style="flex: 1">
+    <v-form v-if="!show" v-model="valid" ref="form"  style="flex: 1">
       <v-row class="ml-5 mr-5 mt-5">
         <v-col class="pr-5">
           <v-text-field
@@ -143,25 +143,29 @@
 </template>
 
 <script>
-import {parseISO, formatISO} from 'date-fns'
+import { parseISO, formatISO } from "date-fns";
+const apiURLGet = "auth-service/authentication/users/";
+const apiURLPut = "auth-service/authentication/users/update-person";
+
 export default {
   name: "AccountForm",
 
   data() {
     return {
       user: {
-        username: "",
-        email: "",
-        firstName: "",
-        lastName: "",
-        birthDate: "",
-        gender: "",
+        username: String,
+        email: String,
+        firstName: String,
+        lastName: String,
+        birthDate: Number,
+        gender: Number,
       },
       userSnaphsot: {},
       menu: false,
       valid: true,
       editing: false,
-      loading: false,
+      loading: false, //button
+      show: true, //spinner
       rules: {
         required: (value) => !!value || "Field is required.",
         email: (value) => {
@@ -171,9 +175,9 @@ export default {
         },
       },
       genders: [
-        { id: 0, text: "Female" },
-        { id: 1, text: "Male" },
-        { id: 2, text: "Other" },
+        { id: 1, text: "Female" },
+        { id: 2, text: "Male" },
+        { id: 3, text: "Other" },
       ],
     };
   },
@@ -182,35 +186,55 @@ export default {
   },
   methods: {
     getProfile: function () {
-      // this.show = true;
-      // axios call
-      this.show = false;
-      this.user = {
-        username: "naca-faca",
-        email: "natasaivanovic98@yahoo.com",
-        firstName: "Natasa",
-        lastName: "Ivanovic",
-        birthDate: "2022-02-01",
-        gender: 0,
-      };
+      let userId = localStorage.getItem("id");
+      this.axios
+        .get(apiURLGet + userId)
+        .then((response) => {
+          console.log(response);
+          this.user = {
+            ...response.data,
+            birthDate: this.convertToDateString(response.data.birthDate),
+            gender: response.data.gender + 1,
+          };
+          this.show = false;
+        })
+        .catch((error) => {
+          this.$root.snackbar.error(error.response.data.message);
+          this.show = false;
+        });
     },
     startEditing: function () {
       this.userSnapshot = Object.assign({}, this.user);
       this.editing = true;
     },
     saveChanges: function () {
+      this.loading = true;
       let changedUser = Object.assign({}, this.user);
-      console.log(changedUser);
-      // axios call
-      //   this.loading = true;
-      //   this.axios({
-      //     url: apiURL + "/details",
-      //     method: "PUT",
-      //     data: changedUser,
-      //   }).then(() => {
-      //     this.editing = false;
-      //     this.loading = false;
-      //   });
+      changedUser = {
+        ...changedUser,
+        birthDate: this.convertToLong(changedUser.birthDate),
+        gender: changedUser.gender - 1,
+      };
+      this.axios({
+        url: apiURLPut,
+        data: changedUser,
+        method: "PUT",
+      })
+        .then((response) => {
+          console.log(response);
+          let token = response.data.token;
+          if (token) {
+            localStorage.setItem("token", token);
+            this.axios.defaults.headers['Authorization'] = `Bearer ${token}` ;
+          }
+          this.editing = false;
+          this.loading = false;
+        })
+        .catch((error) => {
+          console.log(error);
+          this.loading = false;
+          this.$root.snackbar.error(error.response.data);
+        });
     },
     discardChanges: function () {
       this.user = Object.assign({}, this.userSnapshot);
@@ -219,10 +243,10 @@ export default {
     },
     convertToDateString: function (dateLong) {
       const date = new Date(dateLong);
-      return formatISO(date)
+      return formatISO(date, { representation: "date" });
     },
     convertToLong: function (dateStr) {
-      const date = parseISO(dateStr)
+      const date = parseISO(dateStr);
       return date.getTime();
     },
   },

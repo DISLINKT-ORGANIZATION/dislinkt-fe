@@ -23,8 +23,8 @@ Vue.use(VueAxios, Axios);
 Axios.defaults.baseURL = 'http://localhost:8081/';
 Axios.defaults.headers.common['Access-Control-Allow-Credentials'] = 'true';
 
-if (localStorage.getItem('authKey') != null) {
-  Vue.axios.defaults.headers['Authorization'] = localStorage.getItem('authKey');
+if (localStorage.getItem('token') != null) {
+  Vue.axios.defaults.headers['Authorization'] = 'Bearer ' + localStorage.getItem('token');
 }
 
 new Vue({
