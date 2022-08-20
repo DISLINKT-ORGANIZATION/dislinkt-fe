@@ -25,7 +25,7 @@
                 <v-row class="pb-5">
                   <v-text-field
                     v-model="user.username"
-                    :rules="[rules.email, rules.required]"
+                    :rules="[rules.required]"
                     label="Username"
                     prepend-icon="mdi-account"
                     type="text"
@@ -81,6 +81,9 @@
 </template>
 
 <script>
+const apiURL = "auth-service/authentication/login";
+// const apiURL = "http://localhost:8082/authentication/login";
+// const apiURL = "http://localhost:8081/auth-service/authentication/login";
 export default {
   name: "LoginForm",
 
@@ -92,11 +95,6 @@ export default {
       },
       rules: {
         required: (value) => !!value || "Field is required.",
-        email: (value) => {
-          const pattern =
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-          return pattern.test(value) || "Invalid e-mail.";
-        },
       },
       valid: true,
       error: false,
@@ -113,8 +111,34 @@ export default {
         this.loading = false;
         return;
       }
-      // axios call
-      this.$router.push({ name: "HomeView" });
+      this.axios({
+        url: apiURL,
+        method: "POST",
+        data: this.user
+      }).then((response) => {
+        let loggedInUser = {
+          id: response.data.id,
+          role: response.data.role
+        }
+        localStorage.setItem("role", response.data.role);
+        localStorage.setItem(
+          "authKey",
+          "Bearer " + response.data.token
+        );
+        localStorage.setItem("user", JSON.stringify(loggedInUser));
+        this.axios.defaults.headers["Authorization"] = "Bearer " + response.data.token;
+        this.loading = false;
+        this.$router.push({ name: "HomeView" });
+      }).catch((error) => {
+        this.loading = false;
+        if (error.response.status === 401) {
+          this.$root.snackbar.error("Invalid credentials");
+        } else {
+          this.$root.snackbar.error(error.response.data.message);
+        }
+        this.$refs.form.reset();
+      })
+      
     },
   },
 };
