@@ -171,10 +171,8 @@
 
 <script>
 const apiURL = "auth-service/authentication/register-user";
-
 export default {
   name: "RegisterForm",
-
   data() {
     return {
       user: {
@@ -261,7 +259,6 @@ export default {
 .description {
   font-family: "Baloo2", Helvetica, Arial;
 }
-
 .main-screen {
   background: rgb(181, 136, 251);
   background: radial-gradient(

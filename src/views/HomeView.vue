@@ -1,10 +1,10 @@
 <template>
   <v-app>
     <v-navigation-drawer v-model="drawer" app>
-      <navigation-bar></navigation-bar>
+      <navigation-bar v-bind:user="user"></navigation-bar>
     </v-navigation-drawer>
 
-    <v-app-bar app color="#666bff">
+    <v-app-bar app color="#8C9EFF">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title class="description" style="font-size: 25px"
@@ -29,19 +29,43 @@
 
 <script>
 import NavigationBar from "@/components/nav/NavigationBar.vue";
+const apiURL = "auth-service/authentication/users/";
 
 export default {
   name: "HomeView",
   components: {
     NavigationBar,
   },
-  data: () => ({ drawer: true }),
+  data() {
+    return {
+      drawer: true,
+      user: {
+        firstName: String,
+        lastName: String,
+        username: String
+      }
+    };
+  },
+  mounted() {
+    this.getLoggedInUser();
+  },
   methods: {
     logout() {
       localStorage.clear();
       this.$router.push({ name: "LoginView" });
     },
-  },
+    getLoggedInUser() {
+      let userId = localStorage.getItem("id");
+      console.log(userId);
+      this.axios.get(
+          apiURL + userId
+      ).then((response) => {
+        this.user = response.data;
+      }).catch((error) => {
+        this.$root.snackbar.error(error.response.data.message);
+      })
+    }
+  }
 };
 </script>
 
