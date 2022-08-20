@@ -229,6 +229,7 @@ export default {
           }
           this.editing = false;
           this.loading = false;
+          this.$root.snackbar.success("Successfully updated account");
         })
         .catch((error) => {
           console.log(error);
