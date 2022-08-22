@@ -121,13 +121,9 @@ export default {
           this.loading = false;
           this.$router.push({ name: "HomeView" });
         })
-        .catch((error) => {
+        .catch(() => {
           this.loading = false;
-          if (error.response.status === 400) {
-            this.$root.snackbar.error("Invalid credentials");
-          } else {
-            this.$root.snackbar.error(error.response.data.message);
-          }
+          this.$root.snackbar.error("Invalid credentials");
           this.$refs.form.reset();
         });
     },
