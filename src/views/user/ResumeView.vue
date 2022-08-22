@@ -3,7 +3,7 @@
     <v-row align="center" justify="center">
       <v-col cols="8">
         <v-card class="mt-10">
-          <v-card-title class="description ml-5">
+          <v-card-title class="description ml-1">
             <v-col>My resume</v-col>
           </v-card-title>
           <v-card-text>
