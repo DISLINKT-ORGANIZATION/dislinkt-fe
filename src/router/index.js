@@ -5,7 +5,8 @@ import LoginView from "@/views/auth/LoginView.vue";
 import RegisterView from "@/views/auth/RegisterView.vue";
 import HomeView from "@/views/HomeView.vue";
 import AccountView from "@/views/user/AccountView.vue";
-import ResumeView from "@/views/user/ResumeView.vue";
+import SkillsView from "@/views/user/SkillsView.vue";
+import WorkingExperienceView from "@/views/user/WorkingExperienceView.vue";
 
 Vue.use(VueRouter);
 
@@ -32,9 +33,14 @@ const routes = [
         path: "/account"
       },
       {
-        component: ResumeView,
-        name: "ResumeView",
-        path: "/resume"
+        component: SkillsView,
+        name: "SkillsView",
+        path: "/skills"
+      },
+      {
+        component: WorkingExperienceView,
+        name: "WorkingExperienceView",
+        path: "/working-experience"
       }
     ]
   },
@@ -73,5 +79,17 @@ function guardRouteLoggedIn(to, from, next) {
 //     else next({ name: "HomeAdminView" });
 //   }
 // }
+
+// Vue.axios.interceptors.response.use(undefined, function (error) {
+//   if (error) {
+//     const originalRequest = error.config;
+//     if (error.response.status === 401 && !originalRequest._retry) {
+//         originalRequest._retry = true;
+//         localStorage.clear();
+//         return router.push('/login');
+//     }
+//     return Promise.reject(error);
+//   }
+// })
 
 export default router;
