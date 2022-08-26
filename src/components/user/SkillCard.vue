@@ -15,7 +15,7 @@
           </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-list-item-title v-text="p.name"></v-list-item-title>
+            <v-list-item-title v-text="p.name" class="text"></v-list-item-title>
           </v-list-item-content>
 
           <v-list-item-content style="flex: 2">
@@ -26,6 +26,7 @@
               max="5"
               ticks="always"
               tick-size="5"
+              class="text"
               :readonly="!editing"
             >
             </v-slider>
@@ -45,6 +46,7 @@
               v-model="newElement.type"
               placeholder="Type"
               :items="cvElementTypes"
+              class="text"
             />
           </v-list-item-content>
 
@@ -56,6 +58,7 @@
               item-text="name"
               item-value="value"
               :rules="[rules.required]"
+              class="text"
             />
           </v-list-item-content>
 
@@ -65,6 +68,7 @@
               placeholder="Proficiency"
               :items="possibleProficiencies"
               :rules="[rules.required]"
+              class="text"
             >
             </v-autocomplete>
           </v-list-item-content>
@@ -80,7 +84,7 @@
               color="#8C9EFF"
               @click="startEditing()"
               block
-              class="description"
+              class="text"
               style="font-size: 15px"
               :loading="loading"
               ><b>Edit details</b></v-btn
@@ -93,7 +97,7 @@
               color="success"
               @click="saveChanges()"
               block
-              class="description"
+              class="text"
               style="font-size: 15px"
               :loading="loading"
               ><b>Save changes</b></v-btn
@@ -104,7 +108,7 @@
               color="error"
               @click="discardChanges()"
               block
-              class="description"
+              class="text"
               style="font-size: 15px"
               :loading="loading"
               ><b>Discard changes</b></v-btn
@@ -305,8 +309,7 @@ export default {
 </script>
 
 <style scoped>
-.description {
+.text {
   font-family: "Baloo2", Helvetica, Arial;
-  font-size: 18px;
 }
 </style>
