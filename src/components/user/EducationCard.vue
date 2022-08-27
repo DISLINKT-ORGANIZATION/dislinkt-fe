@@ -2,12 +2,12 @@
   <v-container fill-height align="center" justify="center">
     <v-form v-model="valid" ref="form" style="flex: 1">
       <v-list>
-        <div v-for="e, idx in experience" :key="e.id">
+        <div v-for="(e, idx) in education" :key="e.id">
           <v-card class="mb-5 card-color" elevation="0">
             <v-list-item>
               <v-list-item-content>
                 <v-list-item-title
-                  v-text="e.positionTitle"
+                  v-text="e.school"
                   class="position-title"
                 ></v-list-item-title>
               </v-list-item-content>
@@ -30,7 +30,6 @@
                       v-model="e.startDate"
                       label="Start date"
                       prepend-icon="mdi-calendar"
-                      readonly
                       v-bind="attrs"
                       v-on="on"
                       :rules="[rules.required]"
@@ -61,7 +60,6 @@
                       v-model="e.endDate"
                       label="End date"
                       prepend-icon="mdi-calendar"
-                      readonly
                       v-bind="attrs"
                       v-on="on"
                     ></v-text-field>
@@ -76,33 +74,18 @@
               </v-list-item-content>
             </v-list-item>
             <v-list-item>
-              <v-list-item-content style="flex: 2">
-                <v-slider
-                  v-model="e.seniority"
-                  :tick-labels="labels"
-                  min="1"
-                  max="3"
-                  ticks="always"
-                  tick-size="3"
-                  :readonly="!editing"
-                >
-                </v-slider>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item>
               <v-list-item-content style="flex: 4">
                 <v-autocomplete
-                  v-model="e.skills"
-                  :items="skills"
-                  item-text="name"
+                  v-model="e.fieldOfStudy"
+                  :items="fieldsOfStudy"
+                  item-text="text"
+                  item-value="id"
                   return-object
-                  multiple
+                  placeholder="Field of study"
                   :readonly="!editing"
-                  :rules="[rules.nonEmptyArray]"
+                  :rules="[rules.required]"
+                  prepend-icon="mdi-account-school"
                 >
-                  <template v-slot:item="data">
-                    {{ data.item.name + " (" + data.item.group + ")" }}
-                  </template>
                 </v-autocomplete>
               </v-list-item-content>
               <v-list-item-icon>
@@ -116,6 +99,18 @@
 
         <div v-if="editing">
           <v-card class="mb-5 card-color" elevation="0">
+            <v-list-item>
+              <v-list-item-content style="flex: 2">
+                <v-text-field
+                  class="description"
+                  style="font-size: 18px"
+                  v-model="newElement.school"
+                  label="School"
+                  prepend-icon="mdi-school"
+                  :rules="[rules.required]"
+                ></v-text-field>
+              </v-list-item-content>
+            </v-list-item>
             <v-list-item>
               <v-list-item-content style="flex: 2">
                 <v-menu
@@ -180,43 +175,14 @@
             <v-list-item>
               <v-list-item-content>
                 <v-autocomplete
-                  v-model="newElement.positionId"
-                  :items="jobPositions"
-                  placeholder="Job title"
+                  v-model="newElement.fieldOfStudy"
+                  :items="fieldsOfStudy"
+                  placeholder="Field of study"
                   :rules="[rules.required]"
-                  item-text="title"
+                  item-text="text"
                   item-value="id"
+                  prepend-icon="mdi-account-school"
                 />
-              </v-list-item-content>
-              <v-list-item-content style="flex: 2" class="ml-2">
-                <v-slider
-                  v-model="newElement.seniority"
-                  :tick-labels="labels"
-                  min="1"
-                  max="3"
-                  ticks="always"
-                  tick-size="3"
-                  :readonly="!editing"
-                >
-                </v-slider>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-content style="flex: 4">
-                <v-autocomplete
-                  placeholder="Used skills"
-                  v-model="newElement.skills"
-                  :items="skills"
-                  item-text="name"
-                  return-object
-                  multiple
-                  :rules="[rules.nonEmptyArray]"
-                  :readonly="!editing"
-                >
-                  <template v-slot:item="data">
-                    {{ data.item.name }}
-                  </template>
-                </v-autocomplete>
               </v-list-item-content>
               <v-list-item-icon>
                 <v-btn icon @click="addItem(newElement)">
@@ -270,85 +236,68 @@
 
 <script>
 import { parseISO, formatISO } from "date-fns";
-const apiURLGetResume = "account-service/accounts/user/";
-const apiURLGetAllProficiencies = "account-service/skill-proficiencies";
-const apiURLGetAllJobPositions = "account-service/job-positions";
-const apiURLUpdateExperience = "account-service/working-experience/";
+const apiURLEducation = "account-service/education/";
 
 export default {
-  name: "WorkingExperienceCard",
+  name: "EducationCard",
   data() {
     return {
       valid: true,
-      experience: [],
-      editing: false,
-      rules: {
-        required: (value) => !!value || "Field is required.",
-        nonEmptyArray: (value) =>
-          value.length > 0 || "You must select at least one skill.",
-      },
-      labels: ["Junior", "Medior", "Senior"],
-      skills: [],
+      education: [],
       startDateMenu: [],
       endDateMenu: [],
       startDateMenuEditing: false,
       endDateMenuEditing: false,
+      fieldsOfStudy: [
+        {
+          text: "Bachelor",
+          id: 1,
+        },
+        {
+          text: "Master",
+          id: 2,
+        },
+        {
+          text: "PhD",
+          id: 3,
+        },
+      ],
+      rules: {
+        required: (value) => !!value || "Field is required.",
+      },
+      editing: false,
       newElement: {
         id: 0,
+        school: "",
+        fieldOfStudy: 0,
         startDate: "",
         endDate: "",
-        seniority: 0,
-        positionTitle: "",
-        positionId: 0,
-        skills: [],
       },
-      jobPositions: [],
-      loading: false,
+      loading: false
     };
   },
   mounted: function () {
-    this.getUserAccount();
-    this.getAllSkills();
-    this.getAllJobPositions();
+    this.getUserEducation();
   },
   methods: {
-    getUserAccount() {
-      console.log("get experience");
+    getUserEducation() {
       this.axios
-        .get(apiURLGetResume + localStorage.getItem("id"))
+        .get(apiURLEducation + localStorage.getItem("id"))
         .then((response) => {
-          this.experience = response.data.workingExperience.sort(this.experienceSort);
-          this.experience.forEach((ex) => {
-            ex.startDate = this.convertToDateString(ex.startDate);
-            ex.endDate = this.convertToDateString(ex.endDate);
-            ex.seniority = ex.seniority + 1;
+          console.log(response);
+          this.education = response.data;
+          this.education = this.education.sort(this.educationSort);
+          this.education.forEach((e) => {
+            e.startDate = this.convertToDateString(e.startDate);
+            e.endDate = this.convertToDateString(e.endDate);
+            e.fieldOfStudy = e.fieldOfStudy + 1;
           });
-        });
-    },
-    getAllSkills() {
-      console.log("get all skills");
-      this.axios
-        .get(apiURLGetAllProficiencies)
-        .then((response) => {
-          this.skills = response.data;
         })
         .catch((error) => {
-          this.$root.snackbar.error(error.response.data.message);
-        });
-    },
-    getAllJobPositions() {
-      console.log("get all job positions");
-      this.axios
-        .get(apiURLGetAllJobPositions)
-        .then((response) => {
-          this.jobPositions = response.data;
-        })
-        .catch((error) => {
-          this.$root.snackbar.error(error.response.data.message);
+          console.log(error);
         });
     },
     addItem(newItem) {
-      console.log(newItem);
       this.$refs.form.validate();
       if (!this.valid) {
         return;
@@ -360,64 +309,58 @@ export default {
         return;
       }
       let maxItemId = 1;
-      if (this.experience.length != 0)
-        maxItemId = this.experience.reduce((cur, max) =>
+      if (this.education.length != 0)
+        maxItemId = this.education.reduce((cur, max) =>
           cur.id > max.id ? cur : max
         ).id;
       const itemToAdd = Object.assign({}, newItem);
       itemToAdd.id = maxItemId + 1;
-      itemToAdd.positionTitle = this.jobPositions.find(
-        (e) => e.id === itemToAdd.positionId
-      ).title;
-      // reset newItem
       this.newElement.id = 0;
-      this.newElement.seniority = 1;
-      this.newElement.positionTitle = "";
-      this.newElement.positionId = 0;
+      this.newElement.school = "";
+      this.newElement.fieldOfStudy = 0;
       this.newElement.startDate = "";
       this.newElement.endDate = "";
-      this.newElement.skills = [];
-      this.experience.push(itemToAdd);
+      this.education.push(itemToAdd);
       this.$refs.form.resetValidation();
+    },
+    saveChanges() {
+        this.loading = true;
+        let changedEducation = this.education.map(el => {
+            const newElement = {
+                ...el,
+                startDate: this.convertToLong(el.startDate),
+                endDate: this.convertToLong(el.endDate),
+                fieldOfStudy: el.fieldOfStudy - 1
+            };
+            return newElement;
+        })
+        this.axios({
+            url: apiURLEducation + localStorage.getItem("id"),
+            data: changedEducation,
+            method: "PUT"
+        })
+        .then(() => {
+            this.editing = false;
+            this.loading = false;
+        })
+        .catch((error) => {
+            this.loading = false;
+            this.$root.snackbar.error(error.response.data);
+        })
     },
     deleteItem(id) {
       console.log("delete item " + id);
-      this.experience = this.experience.filter((item) => item.id != id);
+      this.education = this.education.filter((item) => item.id != id);
     },
     startEditing() {
       this.snapshot = [];
-      this.experience.forEach((el) => {
+      this.education.forEach((el) => {
         this.snapshot.push(Object.assign({}, el));
       });
       this.editing = true;
     },
-    saveChanges() {
-      this.loading = true;
-      let changedExperience = this.experience.map(el => {
-        const newElement = {...el, 
-          startDate: this.convertToLong(el.startDate),
-          endDate: this.convertToLong(el.endDate),
-          seniority: el.seniority - 1 }
-          console.log(newElement);
-          return newElement;
-      });
-      this.axios({
-        url: apiURLUpdateExperience + localStorage.getItem("id"),
-        data: changedExperience,
-        method: "PUT",
-      })
-      .then(() => {
-        this.editing = false;
-        this.loading = false;
-      })
-      .catch((error) => {
-        console.log(error);
-        this.loading = false;
-        this.$root.snackbar.error(error.response.data);
-      });
-    },
     discardChanges() {
-      this.experiences = Object.assign([], this.snapshot);
+      this.education = Object.assign([], this.snapshot);
       this.snapshot = [];
       this.editing = false;
     },
@@ -435,7 +378,7 @@ export default {
       const date = parseISO(dateStr);
       return date.getTime();
     },
-    experienceSort: function (e1, e2) {
+    educationSort: function (e1, e2) {
       return e2.startDate - e1.startDate;
     },
   },

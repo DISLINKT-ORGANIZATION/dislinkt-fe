@@ -45,6 +45,7 @@
             </v-list-item-content>
           </v-list-item>
         </router-link>
+        <v-divider></v-divider>
         <router-link :to="{ name: 'AccountView' }" v-slot="{ navigate }">
           <v-list-item @click="navigate">
             <v-list-item-icon>
@@ -81,6 +82,18 @@
               <v-list-item-content>
                 <v-list-item-title style="font-size: 18px"
                   >Experience</v-list-item-title
+                >
+              </v-list-item-content>
+            </v-list-item>
+          </router-link>
+          <router-link :to="{ name: 'EducationView' }" v-slot="{ navigate }">
+            <v-list-item @click="navigate">
+              <v-list-item-icon>
+                <v-icon>mdi-account-school-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title style="font-size: 18px"
+                  >Education</v-list-item-title
                 >
               </v-list-item-content>
             </v-list-item>
