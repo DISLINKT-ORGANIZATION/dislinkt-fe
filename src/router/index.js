@@ -8,6 +8,7 @@ import AccountView from "@/views/user/AccountView.vue";
 import SkillsView from "@/views/user/SkillsView.vue";
 import WorkingExperienceView from "@/views/user/WorkingExperienceView.vue";
 import EducationView from "@/views/user/EducationView.vue";
+import BiographyView from "@/views/user/BiographyView";
 
 Vue.use(VueRouter);
 
@@ -47,6 +48,11 @@ const routes = [
         component: EducationView,
         name: "EducationView",
         path: "/education"
+      },
+      {
+        component: BiographyView,
+        name: "BiographyView",
+        path: "/biography"
       }
     ]
   },
