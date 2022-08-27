@@ -62,6 +62,18 @@
           <template v-slot:activator>
             <v-list-item-content style="font-size: 18px">Resume</v-list-item-content>
           </template>
+          <router-link :to="{ name: 'BiographyView' }" v-slot="{ navigate }">
+            <v-list-item @click="navigate">
+              <v-list-item-icon>
+                <v-icon>mdi-text-account</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title style="font-size: 18px"
+                  >Biography</v-list-item-title
+                >
+              </v-list-item-content>
+            </v-list-item>
+          </router-link>
           <router-link :to="{ name: 'SkillsView' }" v-slot="{ navigate }">
             <v-list-item @click="navigate">
               <v-list-item-icon>
