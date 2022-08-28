@@ -143,7 +143,8 @@
 </template>
 
 <script>
-import { parseISO, formatISO } from "date-fns";
+import moment from 'moment';
+
 const apiURLGet = "auth-service/authentication/users/";
 const apiURLPut = "auth-service/authentication/users/update-person";
 
@@ -243,11 +244,10 @@ export default {
       this.editing = false;
     },
     convertToDateString: function (dateLong) {
-      const date = new Date(dateLong);
-      return formatISO(date, { representation: "date" });
+      return moment(dateLong).format("YYYY-MM-DD");
     },
     convertToLong: function (dateStr) {
-      const date = parseISO(dateStr);
+      const date = moment(dateStr, "YYYY-MM-DD").toDate();
       return date.getTime();
     },
   },
