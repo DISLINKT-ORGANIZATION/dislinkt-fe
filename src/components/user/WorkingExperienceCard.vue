@@ -269,7 +269,7 @@
 </template>
 
 <script>
-import { parseISO, formatISO } from "date-fns";
+import moment from 'moment';
 const apiURLGetResume = "account-service/accounts/user/";
 const apiURLGetAllProficiencies = "account-service/skill-proficiencies";
 const apiURLGetAllJobPositions = "account-service/job-positions";
@@ -425,14 +425,13 @@ export default {
       if (dateLong == -1) {
         return "";
       }
-      const date = new Date(dateLong);
-      return formatISO(date, { representation: "date" });
+      return moment(dateLong).format("YYYY-MM-DD");
     },
     convertToLong(dateStr) {
       if (!dateStr) {
         return -1;
       }
-      const date = parseISO(dateStr);
+      const date = moment(dateStr, "YYYY-MM-DD").toDate();
       return date.getTime();
     },
     experienceSort: function (e1, e2) {

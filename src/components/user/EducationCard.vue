@@ -235,7 +235,7 @@
 </template>
 
 <script>
-import { parseISO, formatISO } from "date-fns";
+import moment from 'moment';
 const apiURLEducation = "account-service/education/";
 
 export default {
@@ -368,14 +368,13 @@ export default {
       if (dateLong == -1) {
         return "";
       }
-      const date = new Date(dateLong);
-      return formatISO(date, { representation: "date" });
+      return moment(dateLong).format("YYYY-MM-DD");
     },
     convertToLong(dateStr) {
       if (!dateStr) {
         return -1;
       }
-      const date = parseISO(dateStr);
+      const date = moment(dateStr, "YYYY-MM-DD").toDate();
       return date.getTime();
     },
     educationSort: function (e1, e2) {
