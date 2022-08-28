@@ -23,7 +23,7 @@ jobs:
       - run: git checkout HEAD^
 
       - name: Print current branch
-        run: git rev-parse --abbrev-ref HEAD
+        run: echo ${{ github.ref }}
 
       - name: Commit Lint
         uses: wagoid/commitlint-github-action@v4
