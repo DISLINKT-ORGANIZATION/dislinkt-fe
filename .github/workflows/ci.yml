@@ -22,9 +22,6 @@ jobs:
           fetch-depth: 0
       - run: git checkout HEAD^
 
-      - name: Print current branch
-        run: echo ${{ github.ref }}
-
       - name: Commit Lint
         uses: wagoid/commitlint-github-action@v4
 
@@ -33,28 +30,21 @@ jobs:
         with:
           node-version: 16
 
-      # - name: Cache node_modules
-      #   id: cache
-      #   uses: actions/cache@v2.1.0
-      #   with:
-      #     path: node_modules
-      #     key: ubuntu-latest-node-v16-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
-
-      # - name: Get npm cache directory
-      #   id: npm-cache-dir
-      #   run: |
-      #     echo "::set-output name=dir::$(npm config get cache)"
-      # - uses: actions/cache@v3
-      #   id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
-      #   with:
-      #     path: ${{ steps.npm-cache-dir.outputs.dir }}
-      #     key: ${{ runner.os }}-node-${{ hashFiles('/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-node-
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+      - uses: actions/cache@v3
+        id: npm-cache
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
         if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm install --save date-fns
+        run: npm install
       
       - name: Build
         run: npm run build
