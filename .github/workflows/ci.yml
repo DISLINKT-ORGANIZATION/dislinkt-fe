@@ -30,9 +30,6 @@ jobs:
         with:
           node-version: 16
 
-      - name: Remove node modules
-        run: git rm -rf ./node_modules
-
       - name: Get npm cache directory
         id: npm-cache-dir
         run: |
