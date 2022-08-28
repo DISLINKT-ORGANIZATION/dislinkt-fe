@@ -38,7 +38,6 @@ jobs:
           key: ubuntu-latest-node-v16-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
 
       - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
         run: npm install
       
       - name: Build
