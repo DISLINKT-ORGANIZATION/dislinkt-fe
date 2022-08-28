@@ -44,7 +44,9 @@ jobs:
 
       - name: Install dependencies
         if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm install
+        run: |
+        npm install
+        npm install --save date-fns
       
       - name: Build
         run: npm run build
