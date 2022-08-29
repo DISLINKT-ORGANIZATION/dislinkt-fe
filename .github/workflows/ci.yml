@@ -49,5 +49,5 @@ jobs:
       # - name: Install date fns
       #   run: npm install --save date-fns
       
-      # - name: Build
-      #   run: npm run build
+      - name: Build
+        run: npm run build
