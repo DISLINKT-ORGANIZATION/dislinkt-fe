@@ -8,7 +8,7 @@
           </v-card-title>
           <v-card-text>
             <v-row>
-              <education-card />
+              <education-card v-bind:userId="userId" v-bind:editable="true"/>
             </v-row>
           </v-card-text>
         </v-card>
@@ -24,6 +24,11 @@ export default {
   components: {
     EducationCard
   },
+  data() {
+    return {
+      userId: localStorage.getItem("id")
+    }
+  }
 };
 </script>
 

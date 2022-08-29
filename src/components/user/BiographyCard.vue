@@ -2,6 +2,7 @@
   <v-container fill-height align="center" justify="center">
     <v-form ref="form" style="flex: 1">
       <v-textarea
+        class="card-text ml-4 mr-4"
         v-model="biography"
         label="Biography..."
         full-width
@@ -9,7 +10,7 @@
         single-line
         :readonly="!editing"
       ></v-textarea>
-      <v-row v-if="!editing">
+      <v-row v-if="editable && !editing">
         <v-col>
           <v-btn
             color="#8C9EFF"
@@ -22,7 +23,7 @@
           >
         </v-col>
       </v-row>
-      <v-row v-else>
+      <v-row v-if="editable && editing">
         <v-col>
           <v-btn
             color="success"
@@ -55,6 +56,10 @@ const apiURL = "account-service/accounts/user/";
 
 export default {
   name: "BiographyCard",
+  props: {
+    userId: String,
+    editable: Boolean,
+  },
   data() {
     return {
       biography: "",
@@ -69,7 +74,7 @@ export default {
   },
   methods: {
     getUserAccount() {
-      this.axios.get(apiURL + localStorage.getItem("id")).then((response) => {
+      this.axios.get(apiURL + this.userId).then((response) => {
         this.biography = response.data.biography;
       });
     },
@@ -85,13 +90,14 @@ export default {
     saveChanges() {
       this.loading = true;
       this.axios({
-        url: apiURL + localStorage.getItem("id") + "/biography",
-        data: {biography: this.biography},
+        url: apiURL + this.userId + "/biography",
+        data: { biography: this.biography },
         method: "PUT",
       })
         .then(() => {
           this.editing = false;
           this.loading = false;
+          this.$root.snackbar.success("Successfully updated biography");
         })
         .catch((error) => {
           this.loading = false;
@@ -116,5 +122,11 @@ export default {
 .card-color {
   background-color: #f4f6f8;
   border: rgb(187, 182, 182) 1px solid !important;
+}
+
+.card-text >>> textarea {
+  text-align: justify;
+  font-family: "Baloo2", Helvetica, Arial;
+  font-size: 18px;
 }
 </style>

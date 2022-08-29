@@ -7,7 +7,7 @@
         :active="show"
       ></v-progress-linear>
     </v-row>
-    <v-form v-if="!show" v-model="valid" ref="form"  style="flex: 1">
+    <v-form v-if="!show" v-model="valid" ref="form" style="flex: 1">
       <v-row class="ml-5 mr-5 mt-5">
         <v-col class="pr-5">
           <v-text-field
@@ -101,7 +101,7 @@
           ></v-select>
         </v-col>
       </v-row>
-      <v-row v-if="!editing" class="ml-5 mr-5">
+      <v-row v-if="editable && !editing" class="ml-5 mr-5">
         <v-col>
           <v-btn
             color="#8C9EFF"
@@ -114,7 +114,7 @@
           >
         </v-col>
       </v-row>
-      <v-row v-else class="ml-5 mr-5">
+      <v-row v-if="editable && editing" class="ml-5 mr-5">
         <v-col>
           <v-btn
             color="success"
@@ -150,7 +150,10 @@ const apiURLPut = "auth-service/authentication/users/update-person";
 
 export default {
   name: "AccountForm",
-
+  props: {
+    userId: String,
+    editable: Boolean
+  },
   data() {
     return {
       user: {
@@ -187,9 +190,8 @@ export default {
   },
   methods: {
     getProfile: function () {
-      let userId = localStorage.getItem("id");
       this.axios
-        .get(apiURLGet + userId)
+        .get(apiURLGet + this.userId)
         .then((response) => {
           console.log(response);
           this.user = {
