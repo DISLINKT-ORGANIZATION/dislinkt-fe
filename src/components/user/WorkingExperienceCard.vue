@@ -226,7 +226,7 @@
             </v-list-item>
           </v-card>
         </div>
-        <v-row v-if="!editing">
+        <v-row v-if="editable && !editing">
           <v-col>
             <v-btn
               color="#8C9EFF"
@@ -239,7 +239,7 @@
             >
           </v-col>
         </v-row>
-        <v-row v-else>
+        <v-row v-if="editable && editing">
           <v-col>
             <v-btn
               color="success"
@@ -277,6 +277,10 @@ const apiURLUpdateExperience = "account-service/working-experience/";
 
 export default {
   name: "WorkingExperienceCard",
+  props: {
+    userId: String,
+    editable: Boolean
+  },
   data() {
     return {
       valid: true,
@@ -315,7 +319,7 @@ export default {
     getUserAccount() {
       console.log("get experience");
       this.axios
-        .get(apiURLGetResume + localStorage.getItem("id"))
+        .get(apiURLGetResume + this.userId)
         .then((response) => {
           this.experience = response.data.workingExperience.sort(this.experienceSort);
           this.experience.forEach((ex) => {
@@ -402,13 +406,14 @@ export default {
           return newElement;
       });
       this.axios({
-        url: apiURLUpdateExperience + localStorage.getItem("id"),
+        url: apiURLUpdateExperience + this.userId,
         data: changedExperience,
         method: "PUT",
       })
       .then(() => {
         this.editing = false;
         this.loading = false;
+        this.$root.snackbar.success("Successfully updated working experience");
       })
       .catch((error) => {
         console.log(error);

@@ -24,4 +24,8 @@ export default {
   src: local("Baloo2"),
     url(./fonts/Baloo2/Baloo2-Regular.ttf) format("truetype");
 }
+
+.primary-color {
+  color: #8C9EFF;
+}
 </style>
