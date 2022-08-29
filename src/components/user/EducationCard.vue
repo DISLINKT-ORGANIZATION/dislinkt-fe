@@ -192,7 +192,7 @@
             </v-list-item>
           </v-card>
         </div>
-        <v-row v-if="!editing">
+        <v-row v-if="editable && !editing">
           <v-col>
             <v-btn
               color="#8C9EFF"
@@ -205,7 +205,7 @@
             >
           </v-col>
         </v-row>
-        <v-row v-else>
+        <v-row v-if="editable && editing">
           <v-col>
             <v-btn
               color="success"
@@ -240,6 +240,10 @@ const apiURLEducation = "account-service/education/";
 
 export default {
   name: "EducationCard",
+  props: {
+    userId: String,
+    editable: Boolean
+  },
   data() {
     return {
       valid: true,
@@ -282,7 +286,7 @@ export default {
   methods: {
     getUserEducation() {
       this.axios
-        .get(apiURLEducation + localStorage.getItem("id"))
+        .get(apiURLEducation + this.userId)
         .then((response) => {
           console.log(response);
           this.education = response.data;
@@ -342,6 +346,7 @@ export default {
         .then(() => {
             this.editing = false;
             this.loading = false;
+            this.$root.snackbar.success("Successfully updated education");
         })
         .catch((error) => {
             this.loading = false;

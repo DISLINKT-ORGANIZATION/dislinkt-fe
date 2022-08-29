@@ -78,7 +78,7 @@
             </v-btn>
           </v-list-item-icon>
         </v-list-item>
-        <v-row v-if="!editing">
+        <v-row v-if="editable && !editing">
           <v-col>
             <v-btn
               color="#8C9EFF"
@@ -91,7 +91,7 @@
             >
           </v-col>
         </v-row>
-        <v-row v-else>
+        <v-row v-if="editable && editing">
           <v-col>
             <v-btn
               color="success"
@@ -126,6 +126,10 @@ const apiURLUpdateProfs = "account-service/skill-proficiencies/user/";
 
 export default {
   name: "SkillCard",
+  props: {
+    userId: String,
+    editable: Boolean
+  },
   data() {
     return {
       valid: true,
@@ -198,7 +202,7 @@ export default {
     getUserAccount: function () {
       this.show = true;
       this.axios.get(
-        apiURLGetResume + localStorage.getItem("id")
+        apiURLGetResume + this.userId
       ).then((response) => {
         this.proficiencies = response.data.skills;
         this.proficiencies.forEach((p) => {
@@ -208,7 +212,6 @@ export default {
         this.show = false;
       })
     },
-
     getAllSkillElements: function () {
       this.show = true;
       this.axios.get(apiURLGetAllProficiencies)
@@ -266,13 +269,14 @@ export default {
       let changedProf = Object.assign([], this.proficiencies);
       this.loading = true;
       this.axios({
-        url: apiURLUpdateProfs + localStorage.getItem("id"),
+        url: apiURLUpdateProfs + this.userId,
         method: "PUT",
         data: changedProf,
       }).then(() => {
         this.proficiencies.sort(this.elementTypeSort);
         this.editing = false;
         this.loading = false;
+        this.$root.snackbar.success("Successfully updated skills");
       });
     },
 

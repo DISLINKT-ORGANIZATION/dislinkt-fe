@@ -9,22 +9,24 @@
       </v-flex>
     </v-layout>
     <v-list>
-      <v-list-item link>
-        <v-list-item-content>
-          <v-list-item-title
-            class="description d-flex justify-center"
-            style="font-size: 25px"
-          >
-            {{ user.firstName }} {{ user.lastName }}
-          </v-list-item-title>
-          <v-list-item-subtitle
-            class="description d-flex justify-center"
-            style="font-size: 18px"
-          >
-            @{{ user.username }}
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
+      <router-link :to="{ name: 'ProfileView', params: {id: userId} }" v-slot="{ navigate }">
+        <v-list-item link @click="navigate">
+          <v-list-item-content>
+            <v-list-item-title
+              class="description d-flex justify-center"
+              style="font-size: 25px"
+            >
+              {{ user.firstName }} {{ user.lastName }}
+            </v-list-item-title>
+            <v-list-item-subtitle
+              class="description d-flex justify-center"
+              style="font-size: 18px"
+            >
+              @{{ user.username }}
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </router-link>
     </v-list>
     <v-divider></v-divider>
     <v-list nav dense>
@@ -60,7 +62,9 @@
         </router-link>
         <v-list-group prepend-icon="mdi-file-account-outline">
           <template v-slot:activator>
-            <v-list-item-content style="font-size: 18px">Resume</v-list-item-content>
+            <v-list-item-content style="font-size: 18px"
+              >Resume</v-list-item-content
+            >
           </template>
           <router-link :to="{ name: 'BiographyView' }" v-slot="{ navigate }">
             <v-list-item @click="navigate">
@@ -86,7 +90,10 @@
               </v-list-item-content>
             </v-list-item>
           </router-link>
-          <router-link :to="{ name: 'WorkingExperienceView' }" v-slot="{ navigate }">
+          <router-link
+            :to="{ name: 'WorkingExperienceView' }"
+            v-slot="{ navigate }"
+          >
             <v-list-item @click="navigate">
               <v-list-item-icon>
                 <v-icon>mdi-briefcase-outline</v-icon>
@@ -170,6 +177,7 @@
 export default {
   data: () => ({
     selectedItem: null,
+    userId: localStorage.getItem("id"),
   }),
   props: {
     user: Object,
