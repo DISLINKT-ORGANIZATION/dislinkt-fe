@@ -10,6 +10,7 @@ import WorkingExperienceView from "@/views/user/WorkingExperienceView.vue";
 import EducationView from "@/views/user/EducationView.vue";
 import BiographyView from "@/views/user/BiographyView.vue";
 import ProfileView from "@/views/user/ProfileView.vue";
+import ExploreConnectionsView from "@/views/ExploreConnectionsView.vue";
 
 Vue.use(VueRouter);
 
@@ -60,6 +61,11 @@ const routes = [
         name: "ProfileView",
         path: "/profile/:id",
         props: true,
+      },
+      {
+        component: ExploreConnectionsView,
+        name: "ExploreConnectionsView",
+        path: "/explore-connections"
       }
     ]
   },

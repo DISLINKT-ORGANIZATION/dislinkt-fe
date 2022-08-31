@@ -6,7 +6,7 @@
         v-model="biography"
         label="Biography..."
         full-width
-        rows="12"
+        rows="6"
         single-line
         :readonly="!editing"
       ></v-textarea>
