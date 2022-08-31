@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row align="center" justify="center">
       <v-col cols="8">
-        <v-card class="mt-10">
+        <v-card class="mt-10" min-height="900px">
           <v-card-title class="description ml-1">
             <persona-avatar
               v-bind:size="100"
@@ -13,7 +13,7 @@
               <div class="profile-subtitle">@{{ username }}</div>
               <div class="profile-subtitle">500+ connections</div>
             </v-list-item-content>
-            <v-list-item-content>
+            <v-list-item-content v-if="!checkIfLoggedInUser()">
               <span class="mt-10">
                 <v-btn
                   class="mr-5"
@@ -137,21 +137,9 @@ export default {
     id: String,
   },
   mounted: function () {
-    // this.getUserAccount();
     this.getUserInfo();
   },
   methods: {
-    // getUserAccount() {
-    //   this.axios.get(
-    //     apiGetResume + this.id
-    //   ).then((response) => {
-    //     this.proficiencies = response.data.skills;
-    //     this.proficiencies.forEach((p) => {
-    //       p.skillProficiency = p.skillProficiency + 1;
-    //     });
-    //     this.proficiencies.sort(this.elementTypeSort);
-    //   })
-    // },
     getUserInfo() {
       this.axios
         .get(apiGetUser + this.id)
@@ -164,6 +152,9 @@ export default {
           this.$root.snackbar.error(error.response.data.message);
         });
     },
+    checkIfLoggedInUser() {
+      return this.id === localStorage.getItem("id");
+    }
   },
 };
 </script>
