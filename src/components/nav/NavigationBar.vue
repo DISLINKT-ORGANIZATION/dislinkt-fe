@@ -119,7 +119,7 @@
           </router-link>
         </v-list-group>
         <v-divider></v-divider>
-        <router-link :to="{ name: 'Home' }" v-slot="{ navigate }">
+        <router-link :to="{ name: 'MyConnectionsView' }" v-slot="{ navigate }">
           <v-list-item @click="navigate">
             <v-list-item-icon>
               <v-icon>mdi-account-heart-outline</v-icon>
@@ -143,7 +143,7 @@
             </v-list-item-content>
           </v-list-item>
         </router-link>
-        <router-link :to="{ name: 'Home' }" v-slot="{ navigate }">
+        <router-link :to="{ name: 'BlockedConnectionsView' }" v-slot="{ navigate }">
           <v-list-item @click="navigate">
             <v-list-item-icon>
               <v-icon>mdi-account-remove-outline</v-icon>

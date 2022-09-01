@@ -151,7 +151,7 @@ const apiURLPut = "auth-service/authentication/users/update-person";
 export default {
   name: "AccountForm",
   props: {
-    userId: String,
+    userId: Number,
     editable: Boolean
   },
   data() {

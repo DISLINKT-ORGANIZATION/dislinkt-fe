@@ -11,7 +11,9 @@
             <v-list-item-content class="ml-5">
               <div class="profile-title">{{ firstName }} {{ lastName }}</div>
               <div class="profile-subtitle">@{{ username }}</div>
-              <div class="profile-subtitle">500+ connections</div>
+              <div class="profile-subtitle">
+                {{ connectionNumber }} connections
+              </div>
             </v-list-item-content>
             <v-list-item-content v-if="!checkIfLoggedInUser()">
               <span class="mt-10">
@@ -31,9 +33,10 @@
                   width="100px"
                   ><b>MESSAGE</b></v-btn
                 >
-                <v-btn fab small elevation="2" color="#C62828" dark
+                <!-- <v-btn fab small elevation="2" color="#C62828" dark
                   ><v-icon>mdi-account-cancel</v-icon></v-btn
-                >
+                > -->
+                <settings-menu v-bind:accountId="accountId" />
               </span>
             </v-list-item-content>
           </v-card-title>
@@ -106,9 +109,11 @@ import EducationCard from "@/components/user/EducationCard.vue";
 import SkillCard from "@/components/user/SkillCard.vue";
 import WorkingExperienceCard from "@/components/user/WorkingExperienceCard.vue";
 import BiographyCard from "@/components/user/BiographyCard.vue";
-// const apiGetResume = "account-service/accounts/user/";
+import SettingsMenu from "@/components/SettingsMenu.vue";
+
 const apiGetUser = "auth-service/authentication/users/";
-//   import SkillCard from "@/components/user/SkillCard.vue";
+const apiURLGetResume = "account-service/accounts/user/";
+const apiGetConnections = "account-service/connections/";
 export default {
   name: "ProfileView",
   components: {
@@ -118,6 +123,7 @@ export default {
     SkillCard,
     WorkingExperienceCard,
     BiographyCard,
+    SettingsMenu,
   },
   data() {
     return {
@@ -126,11 +132,9 @@ export default {
       lastName: "",
       biography: "",
       publicAccount: false,
-      proficiencies: [],
-      education: [],
-      workingExperience: [],
       tab: null,
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      accountId: "",
+      connectionNumber: 0,
     };
   },
   props: {
@@ -138,6 +142,15 @@ export default {
   },
   mounted: function () {
     this.getUserInfo();
+    this.getUserAccountId();
+    this.getConnections();
+  },
+  watch: {
+    id() {
+      this.getUserInfo();
+      this.getUserAccountId();
+      this.getConnections();
+    },
   },
   methods: {
     getUserInfo() {
@@ -152,9 +165,30 @@ export default {
           this.$root.snackbar.error(error.response.data.message);
         });
     },
+    getUserAccountId() {
+      console.log("get experience");
+      this.axios
+        .get(apiURLGetResume + this.id)
+        .then((response) => {
+          this.accountId = response.data.id;
+        })
+        .catch(() => {
+          this.$root.snackbar.error();
+        });
+    },
+    getConnections() {
+      this.axios
+        .get(apiGetConnections + this.id)
+        .then((response) => {
+          this.connectionNumber = response.data.length;
+        })
+        .catch(() => {
+          this.$root.snackbar.error();
+        });
+    },
     checkIfLoggedInUser() {
       return this.id === localStorage.getItem("id");
-    }
+    },
   },
 };
 </script>
