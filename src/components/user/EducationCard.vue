@@ -241,7 +241,7 @@ const apiURLEducation = "account-service/education/";
 export default {
   name: "EducationCard",
   props: {
-    userId: String,
+    userId: Number,
     editable: Boolean
   },
   data() {

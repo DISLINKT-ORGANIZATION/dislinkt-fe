@@ -127,7 +127,7 @@ const apiURLUpdateProfs = "account-service/skill-proficiencies/user/";
 export default {
   name: "SkillCard",
   props: {
-    userId: String,
+    userId: Number,
     editable: Boolean
   },
   data() {

@@ -10,7 +10,9 @@ import WorkingExperienceView from "@/views/user/WorkingExperienceView.vue";
 import EducationView from "@/views/user/EducationView.vue";
 import BiographyView from "@/views/user/BiographyView.vue";
 import ProfileView from "@/views/user/ProfileView.vue";
-import ExploreConnectionsView from "@/views/ExploreConnectionsView.vue";
+import ExploreConnectionsView from "@/views/connections/ExploreConnectionsView.vue";
+import MyConnectionsView from "@/views/connections/MyConnectionsView.vue";
+import BlockedConnectionsView from "@/views/connections/BlockedConnectionsView.vue";
 
 Vue.use(VueRouter);
 
@@ -66,7 +68,18 @@ const routes = [
         component: ExploreConnectionsView,
         name: "ExploreConnectionsView",
         path: "/explore-connections"
-      }
+      },
+      {
+        component: MyConnectionsView,
+        name: "MyConnectionsView",
+        path: "/my-connections",
+      },
+      {
+        component: BlockedConnectionsView,
+        name: "BlockedConnectionsView",
+        path: "/blocked-accounts",
+      },
+
     ]
   },
   

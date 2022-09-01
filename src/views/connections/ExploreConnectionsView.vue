@@ -1,11 +1,9 @@
 <template>
   <v-container fluid>
     <v-row align="center" justify="center">
-      <v-col cols="8">
-        <v-card class="mt-10">
-          <v-card-title class="description ml-1">
-            <v-col>Explore connections</v-col>
-          </v-card-title>
+      <v-col cols="6">
+        <v-card class="mt-6">
+          <div class="description ml-8 pt-5">Explore connections</div>
           <v-card-text>
             <v-text-field
               v-model="query"
@@ -14,6 +12,7 @@
               class="ma-3"
               elevation="4"
               placeholder="Search for connections..."
+              @keydown.prevent.enter="search()"
             >
               <template v-slot:append-outer
                 ><v-btn
@@ -27,10 +26,9 @@
                 </v-btn>
               </template>
             </v-text-field>
-
-            <!-- <v-row>
-                <skill-card v-bind:userId="userId" v-bind:editable="true"/>
-              </v-row> -->
+            <v-row v-if="showResult">
+              <connection-list v-bind:connections="users" class="ml-3" />
+            </v-row>
           </v-card-text>
         </v-card>
       </v-col>
@@ -39,31 +37,55 @@
 </template>
 
 <script>
-//   import SkillCard from "@/components/user/SkillCard.vue";
+import ConnectionList from "@/components/ConnectionList.vue";
 const filterApi = "auth-service/authentication/users/search/";
+const accountApi = "account-service/connections/";
 export default {
   name: "ExploreConnectionsView",
-  // components: {
-  //   SkillCard
-  // },
+  components: {
+    ConnectionList,
+  },
   data() {
     return {
       userId: localStorage.getItem("id"),
       query: "",
       users: [],
+      blockedAccountsIds: [],
+      showResult: false,
     };
+  },
+  mounted() {
+    this.getBlockedAccounts();
   },
   methods: {
     search() {
-      alert("search...");
+      if (!this.query) {
+        this.users = [];
+        this.showResult = false;
+        return;
+      }
       this.axios
         .get(filterApi + this.query)
         .then((response) => {
           console.log(response);
-          this.users = response.data;
+          this.users = response.data.filter(
+            (el) =>
+              el.id != this.userId && !this.blockedAccountsIds.includes(el.id)
+          );
+          this.showResult = true;
         })
-        .catch((error) => {
-          this.$root.snackbar.error(error.response.data);
+        .catch(() => {
+          this.$root.snackbar.error();
+        });
+    },
+    getBlockedAccounts() {
+      this.axios
+        .get(accountApi + this.userId + "/blocked-accounts")
+        .then((response) => {
+          this.blockedAccountsIds = response.data.map((e) => e.userId);
+        })
+        .catch(() => {
+          this.$root.snackbar.error();
         });
     },
   },
@@ -74,5 +96,6 @@ export default {
 .description {
   font-family: "Baloo2", Helvetica, Arial;
   font-size: 35px;
+  color: black;
 }
 </style>

@@ -28,4 +28,22 @@ export default {
 .primary-color {
   color: #8C9EFF;
 }
+
+::-webkit-scrollbar-track {
+  background: #ececf0;
+  opacity: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(199, 199, 199);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
 </style>
