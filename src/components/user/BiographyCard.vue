@@ -57,7 +57,7 @@ const apiURL = "account-service/accounts/user/";
 export default {
   name: "BiographyCard",
   props: {
-    userId: String,
+    userId: Number,
     editable: Boolean,
   },
   data() {

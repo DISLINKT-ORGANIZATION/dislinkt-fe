@@ -278,7 +278,7 @@ const apiURLUpdateExperience = "account-service/working-experience/";
 export default {
   name: "WorkingExperienceCard",
   props: {
-    userId: String,
+    userId: Number,
     editable: Boolean
   },
   data() {
