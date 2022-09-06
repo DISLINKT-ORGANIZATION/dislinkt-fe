@@ -5,7 +5,7 @@
         <v-card class="mt-6">
           <div class="description ml-11 pt-5">Blocked accounts</div>
           <v-card-text>
-            <connection-list v-bind:connections="users" v-bind:blockedEnabled="true" class="ml-3" />
+            <connection-list v-bind:connections="users" v-bind:blockedEnabled="true" v-bind:onUserUnblocked="onUserUnblocked" class="ml-3" />
           </v-card-text>
         </v-card>
       </v-col>
@@ -59,6 +59,15 @@ export default {
           this.$root.snackbar.error();
         });
     },
+    onUserUnblocked(id) {
+      console.log("id " + id);
+      console.log("before");
+      console.log(this.users);
+      this.blockedAccountsIds = [...this.blockedAccountsIds].filter(el => el !== id);
+      this.users = [...this.users].filter(el => el.id !== id);
+      console.log("after");
+      console.log(this.users);
+    }
   },
 };
 </script>

@@ -6,14 +6,6 @@
     </div>
     <v-list v-if="connections" two-line class="pr-5 scrollable-list">
       <template v-for="(item, index) in connections">
-        <!-- <router-link
-          :key="index"
-          :to="{
-            name: 'ProfileView',
-            params: { id: item.id },
-          }"
-          v-slot="{ navigate }"
-        > -->
         <v-list-item ripple @click="redirect(item.id)" class="text" :key="`${item.id}-${index}`">
           <persona-avatar
             class="mr-5"
@@ -38,14 +30,23 @@
             <v-btn v-if="requestEnabled" icon @click.stop="declineRequest()">
               <v-icon color="red" size="30"> mdi-close-circle-outline </v-icon>
             </v-btn>
-            <v-btn v-if="blockedEnabled" icon @click.stop="unblock()">
+            <v-btn v-if="blockedEnabled" icon @click.stop="unblock(item.id)">
               <v-icon color="green" size="30">
                 mdi-account-multiple-check
               </v-icon>
             </v-btn>
+            <v-btn v-if="requestModeEnabled" icon @click.stop="onRequestProcessed(item.id, true)">
+              <v-icon color="green" size="30">
+                mdi-check
+              </v-icon>
+            </v-btn>
+            <v-btn v-if="requestModeEnabled" icon @click.stop="onRequestProcessed(item.id, false)">
+              <v-icon color="red" size="30">
+                mdi-close
+              </v-icon>
+            </v-btn>
           </v-list-item-icon>
         </v-list-item>
-        <!-- </router-link> -->
         <v-divider v-if="index != connections.length - 1" :key="index" />
       </template>
     </v-list>
@@ -53,10 +54,12 @@
 </template>
 <script>
 import PersonaAvatar from "./user/PersonaAvatar.vue";
+const apiGetConnections = "account-service/connections/";
 export default {
   name: "ConnectionList",
   props: {
     connections: [],
+    requestModeEnabled: Boolean,
     requestEnabled: {
       type: Boolean,
       default: false,
@@ -65,19 +68,24 @@ export default {
       type: Boolean,
       default: false,
     },
+    onUserUnblocked: {
+      type: Function,
+      default: undefined,
+    },
+    onRequestProcessed: {
+      type: Function,
+      default: undefined,
+    }
   },
   data() {
     return {};
   },
   methods: {
-    acceptRequest() {
-      alert("accept request");
-    },
-    declineRequest() {
-      alert("decline request");
-    },
-    unblock() {
-      alert("unblock account");
+    unblock(accountId) {
+      const currentUserId = localStorage.getItem('id');
+      this.axios.put(`${apiGetConnections}unblock/${currentUserId}/${accountId}`).then(() => {
+        this.onUserUnblocked && this.onUserUnblocked(accountId); 
+      })
     },
     redirect(id) {
       if (!this.blockedEnabled) {

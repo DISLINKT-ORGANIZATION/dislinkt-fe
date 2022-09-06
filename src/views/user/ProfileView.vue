@@ -23,9 +23,19 @@
                   elevation="2"
                   height="40px"
                   width="100px"
-                  ><b>FOLLOW</b></v-btn
+                  :outlined="userConnected || requestPending ? true : false"
+                  :disabled="requestPending"
+                  @click="userConnected ? unfollow() : follow()"
+                  ><b>{{
+                    requestPending
+                      ? "PENDING"
+                      : userConnected
+                      ? "UNFOLLOW"
+                      : "FOLLOW"
+                  }}</b></v-btn
                 >
                 <v-btn
+                  :disabled="!userConnected"
                   class="mr-5"
                   color="#8C9EFF"
                   elevation="2"
@@ -36,12 +46,26 @@
                 <!-- <v-btn fab small elevation="2" color="#C62828" dark
                   ><v-icon>mdi-account-cancel</v-icon></v-btn
                 > -->
-                <settings-menu v-bind:accountId="accountId" />
+                <template
+                  v-if="
+                    userConnected &&
+                    userInitiallyMutedMessages !== undefined &&
+                    userInitiallyMutedPosts !== undefined
+                  "
+                >
+                  <settings-menu
+                    v-bind:accountId="accountId"
+                    :initialMuteMessages="userInitiallyMutedMessages"
+                    :initialMutePosts="userInitiallyMutedPosts"
+                    :onChangeSwitch="handleSwitchChanged"
+                    :onBlockUser="handleUserBlocked"
+                  />
+                </template>
               </span>
             </v-list-item-content>
           </v-card-title>
           <v-divider class="ml-5 mr-5"></v-divider>
-          <v-card-text>
+          <v-card-text v-if="publicAccount || userConnected">
             <v-tabs v-model="tab" centered icons-and-text color="#8C9EFF">
               <v-tabs-slider></v-tabs-slider>
 
@@ -96,6 +120,18 @@
               </v-tab-item>
             </v-tabs-items>
           </v-card-text>
+          <v-card-text v-else>
+            <div class="flex-parent">
+              <span class="circle">
+                <v-icon class="flex-child" size="100px">
+                  mdi-lock-outline
+                </v-icon>
+              </span>
+              <div class="flex-child biography mt-5">
+                This is a private account
+              </div>
+            </div>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
@@ -135,6 +171,10 @@ export default {
       tab: null,
       accountId: "",
       connectionNumber: 0,
+      userConnected: true,
+      requestPending: false,
+      userInitiallyMutedMessages: undefined,
+      userInitiallyMutedPosts: undefined,
     };
   },
   props: {
@@ -144,12 +184,14 @@ export default {
     this.getUserInfo();
     this.getUserAccountId();
     this.getConnections();
+    this.checkIfUserConnected();
   },
   watch: {
     id() {
       this.getUserInfo();
       this.getUserAccountId();
       this.getConnections();
+      this.checkIfUserConnected();
     },
   },
   methods: {
@@ -160,6 +202,68 @@ export default {
           this.username = response.data.username;
           this.firstName = response.data.firstName;
           this.lastName = response.data.lastName;
+          this.userId = response.data.id;
+        })
+        .catch((error) => {
+          this.$root.snackbar.error(error.response.data.message);
+        });
+    },
+    checkIfUserConnected() {
+      const currentUserId = localStorage.getItem("id");
+      if (currentUserId === this.id) {
+        this.userConnected = true;
+        return;
+      }
+      this.axios
+        .get(
+          apiGetConnections + "check-connected/" + currentUserId + "/" + this.id
+        )
+        .then((response) => {
+          // 0 - not followed, 1 - followed, 2 - pending request
+          if (response.data == 1) {
+            this.userConnected = true;
+            this.checkIfConnectionMuted();
+          } else if (response.data == 2) {
+            this.userConnected = false;
+            this.requestPending = true;
+          } else {
+            this.userConnected = false;
+            this.requestPending = false;
+          }
+        })
+        .catch((error) => {
+          this.$root.snackbar.error(error.response.data.message);
+        });
+    },
+    checkIfConnectionMuted() {
+      const currentUserId = localStorage.getItem("id");
+      if (currentUserId === this.id) {
+        return;
+      }
+      this.axios
+        .get(
+          apiGetConnections +
+            "check-muted-posts/" +
+            currentUserId +
+            "/" +
+            this.id
+        )
+        .then((response) => {
+          this.userInitiallyMutedPosts = response.data;
+        })
+        .catch((error) => {
+          this.$root.snackbar.error(error.response.data.message);
+        });
+      this.axios
+        .get(
+          apiGetConnections +
+            "check-muted-messages/" +
+            currentUserId +
+            "/" +
+            this.id
+        )
+        .then((response) => {
+          this.userInitiallyMutedMessages = response.data;
         })
         .catch((error) => {
           this.$root.snackbar.error(error.response.data.message);
@@ -171,6 +275,7 @@ export default {
         .get(apiURLGetResume + this.id)
         .then((response) => {
           this.accountId = response.data.id;
+          this.publicAccount = response.data.publicAccount;
         })
         .catch(() => {
           this.$root.snackbar.error();
@@ -183,11 +288,61 @@ export default {
           this.connectionNumber = response.data.length;
         })
         .catch(() => {
-          this.$root.snackbar.error();
+          this.$root.snackbar.error("Something went wrong");
         });
     },
     checkIfLoggedInUser() {
       return this.id === localStorage.getItem("id");
+    },
+    async handleSwitchChanged(switchName) {
+      const currentUserId = localStorage.getItem("id");
+      const apiExtension =
+        switchName === "messages" ? "mute-messages" : "mute-posts";
+      return this.axios.put(
+        `${apiGetConnections}${apiExtension}/${currentUserId}/${this.id}`
+      );
+    },
+    async handleUserBlocked() {
+      const currentUserId = localStorage.getItem("id");
+      return this.axios
+        .put(`${apiGetConnections}block/${currentUserId}/${this.id}`)
+        .then(() => {
+          this.$router.push({ name: "BlockedConnectionsView" });
+        });
+    },
+    follow() {
+      const currentUserId = localStorage.getItem("id");
+      this.axios
+        .put(apiGetConnections + "follow/" + currentUserId + "/" + this.userId)
+        .then((response) => {
+          let followed = response.data;
+          if (followed) {
+            this.userConnected = true;
+            this.getConnections();
+            this.checkIfUserConnected();
+          } else {
+            this.requestPending = true;
+          }
+        })
+        .catch(() => {
+          this.$root.snackbar.error("Something went wrong");
+        });
+    },
+    unfollow() {
+      const currentUserId = localStorage.getItem("id");
+      this.axios
+        .put(
+          apiGetConnections + "unfollow/" + currentUserId + "/" + this.userId
+        )
+        .then((response) => {
+          console.log(response.data);
+          this.userConnected = false;
+          this.getConnections();
+          this.checkIfUserConnected();
+        })
+        .catch(() => {
+          this.$root.snackbar.error("Something went wrong");
+        });
     },
   },
 };
@@ -217,5 +372,24 @@ export default {
 }
 .profile-subtitle {
   font-size: 20px;
+}
+
+.flex-parent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+}
+
+.flex-child {
+}
+
+.circle {
+  border: 6px solid #757575;
+  border-radius: 100px;
+  padding: 5px;
+  margin-bottom: 5px;
 }
 </style>

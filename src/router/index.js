@@ -13,6 +13,7 @@ import ProfileView from "@/views/user/ProfileView.vue";
 import ExploreConnectionsView from "@/views/connections/ExploreConnectionsView.vue";
 import MyConnectionsView from "@/views/connections/MyConnectionsView.vue";
 import BlockedConnectionsView from "@/views/connections/BlockedConnectionsView.vue";
+import ConnectionRequestsView from "@/views/connections/ConnectionRequestsView.vue";
 
 Vue.use(VueRouter);
 
@@ -78,6 +79,11 @@ const routes = [
         component: BlockedConnectionsView,
         name: "BlockedConnectionsView",
         path: "/blocked-accounts",
+      },
+      {
+        component: ConnectionRequestsView,
+        name: "ConnectionRequestsView",
+        path: "/connection-requests",
       },
 
     ]

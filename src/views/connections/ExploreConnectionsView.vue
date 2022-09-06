@@ -39,7 +39,8 @@
 <script>
 import ConnectionList from "@/components/ConnectionList.vue";
 const filterApi = "auth-service/authentication/users/search/";
-const accountApi = "account-service/connections/";
+// const accountApiConnections = "account-service/connections/";
+const accountApiSearch = "account-service/accounts/search";
 export default {
   name: "ExploreConnectionsView",
   components: {
@@ -50,13 +51,11 @@ export default {
       userId: localStorage.getItem("id"),
       query: "",
       users: [],
-      blockedAccountsIds: [],
+      usersIds: [],
       showResult: false,
     };
   },
-  mounted() {
-    this.getBlockedAccounts();
-  },
+  mounted() {},
   methods: {
     search() {
       if (!this.query) {
@@ -67,29 +66,28 @@ export default {
       this.axios
         .get(filterApi + this.query)
         .then((response) => {
-          console.log(response);
-          this.users = response.data.filter(
-            (el) =>
-              el.id != this.userId && !this.blockedAccountsIds.includes(el.id)
-          );
-          this.showResult = true;
+          this.filterIds(this.userId, response.data);
         })
         .catch(() => {
           this.$root.snackbar.error();
         });
     },
-    getBlockedAccounts() {
+    filterIds(loggedInUserId, users) {
       this.axios
-        .get(accountApi + this.userId + "/blocked-accounts")
-        .then((response) => {
-          this.blockedAccountsIds = response.data.map((e) => e.userId);
+        .post(accountApiSearch, {
+          loggedInUserId: loggedInUserId,
+          usersIds: users.map((el) => el.id),
         })
-        .catch(() => {
-          this.$root.snackbar.error();
+        .then((response) => {
+          console.log(response.data);
+          console.log(users);
+          this.userIds = response.data;
+          this.users = [...users.filter((el) => this.userIds.includes(el.id) && el.id != loggedInUserId)];
+          this.showResult = true;
         });
     },
-  },
-};
+  }
+};  
 </script>
 
 <style scoped>
