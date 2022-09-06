@@ -11,7 +11,7 @@
         >DISLINKT</v-toolbar-title
       >
       <v-spacer />
-      <v-btn class="ml-3" icon>
+      <v-btn class="ml-3" icon @click="checkRequests()">
         <v-icon>mdi-account-outline</v-icon>
       </v-btn>
       <v-btn class="ml-3" icon>
@@ -53,6 +53,9 @@ export default {
     logout() {
       localStorage.clear();
       this.$router.push({ name: "LoginView" });
+    },
+    checkRequests() {
+      this.$router.push({ name: "ConnectionRequestsView" });
     },
     getLoggedInUser() {
       let userId = localStorage.getItem("id");
