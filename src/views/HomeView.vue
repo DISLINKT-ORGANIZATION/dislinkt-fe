@@ -4,11 +4,7 @@
       <navigation-bar v-bind:user="user"></navigation-bar>
     </v-navigation-drawer>
 
-<<<<<<< HEAD
-    <v-app-bar app color="#8C9EFF">
-=======
     <v-app-bar color="indigo accent-1" app>
->>>>>>> ef8023e (feat: chat template looks nice)
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title class="description" style="font-size: 25px"
