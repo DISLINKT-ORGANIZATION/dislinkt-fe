@@ -3,11 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-<<<<<<< HEAD
-    "serve": "vue-cli-service serve  --port=5020",
-=======
     "serve": "vue-cli-service serve --port=5020",
->>>>>>> ef8023e (feat: chat template looks nice)
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
