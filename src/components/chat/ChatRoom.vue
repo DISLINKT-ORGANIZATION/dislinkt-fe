@@ -1,30 +1,29 @@
 <template>
-  <v-container fluid class="ml-5">
+  <v-container v-if="recipientId" fluid class="ml-5">
     <div class="description">
       <v-avatar class="mr-5 mb-2" color="indigo accent-1" size="40px"
-        ><span class="avatar">{{ getConnectionInitials() }}</span></v-avatar
+        ><span class="avatar">{{
+          getConnectionInitials(connectionName)
+        }}</span></v-avatar
       >{{ connectionName }}
     </div>
-    <v-container fluid class="scrollable-list">
+    <v-container fluid class="scrollable-list" ref="list">
       <v-row
-        v-for="(message, index) in getMessages()"
+        v-for="(message, index) in messages"
         :key="index"
         class="pb-5"
-        :justify="checkIfLoggedInUser(message.senderName) ? 'end' : 'start'"
+        :justify="checkIfLoggedInUser(message.senderId) ? 'end' : 'start'"
       >
         <v-avatar
-          v-if="!checkIfLoggedInUser(message.senderName)"
+          v-if="!checkIfLoggedInUser(message.senderId)"
           color="indigo accent-1"
           size="40"
-          ><span class="avatar">{{ getConnectionInitials() }}</span></v-avatar
+          ><span class="avatar">{{
+            getConnectionInitials(connectionName)
+          }}</span></v-avatar
         >
-        <!-- <v-chip :color="checkIfLoggedInUser(message.senderName) ? '#c1caff' : 'light-grey'" class="mr-5 ml-3 message-chip my-font">
-          <span>
-            {{ message.content }}
-          </span>
-        </v-chip> -->
         <span
-          v-if="checkIfLoggedInUser(message.senderName)"
+          v-if="checkIfLoggedInUser(message.senderId)"
           class="mr-5 ml-3 custom-message-chip my-font user-chip"
         >
           {{ message.content }}
@@ -61,114 +60,109 @@
 </template>
 
 <script>
+import VueSocketIO from "vue-socket.io";
+import Vue from "vue";
+
+Vue.use(
+  new VueSocketIO({
+    debug: true,
+    connection: "http://localhost:8186/chat?room=" + localStorage.getItem("id"),
+  })
+);
+
+const messagesUrl = "messaging-service/chat-room/";
+const usersUrl = "auth-service/authentication/users/";
+
 export default {
   name: "ChatRoom",
   props: {
-    chatId: String,
-    connectionName: String,
+    recipientId: String,
   },
   data() {
     return {
+      senderId: localStorage.getItem("id"),
       message: "",
-      messages: [
-        {
-          chatId: 1,
-          senderName: "Natasa",
-          recipientName: "Vera",
-          content: "Neka poruka test 1",
-        },
-        {
-          chatId: 1,
-          senderName: "Vera",
-          recipientName: "Natasa",
-          content: "Neka poruka test 2Neka poruka test 2",
-        },
-        {
-          chatId: 1,
-          senderName: "Natasa",
-          recipientName: "Vera",
-          content: "Neka poruka test 3Neka poruka test 2Neka poruka test 2",
-        },
-        {
-          chatId: 1,
-          senderName: "Vera",
-          recipientName: "Natasa",
-          content:
-            "Neka poruka test 4Neka poruka test 2Neka poruka test 2Neka poruka test 2Neka poruka test 2Neka poruka test 2Neka poruka test 2",
-        },
-        {
-          chatId: 1,
-          senderName: "Vera",
-          recipientName: "Natasa",
-          content: "Neka poruka test 2",
-        },
-        {
-          chatId: 1,
-          senderName: "Natasa",
-          recipientName: "Vera",
-          content: "Neka poruka test 3",
-        },
-        {
-          chatId: 1,
-          senderName: "Vera",
-          recipientName: "Natasa",
-          content: "Neka poruka test 4",
-        },
-        {
-          chatId: 1,
-          senderName: "Vera",
-          recipientName: "Natasa",
-          content: "Neka poruka test 2",
-        },
-        {
-          chatId: 1,
-          senderName: "Natasa",
-          recipientName: "Vera",
-          content: "Neka poruka test 3",
-        },
-        {
-          chatId: 1,
-          senderName: "Vera",
-          recipientName: "Natasa",
-          content: "Neka poruka test 4",
-        },
-        {
-          chatId: 1,
-          senderName: "Vera",
-          recipientName: "Natasa",
-          content: "Neka poruka test 2",
-        },
-        {
-          chatId: 1,
-          senderName: "Natasa",
-          recipientName: "Vera",
-          content: "Neka poruka test 3",
-        },
-        {
-          chatId: 1,
-          senderName: "Vera",
-          recipientName: "Natasa",
-          content: "Neka poruka test 4",
-        },
-      ],
+      chatRoomId: 0,
+      switchName: true,
+      stompClient: {},
+      messageData: {},
+      messages: [],
+      connectionName: undefined,
     };
   },
+  sockets: {
+    connect() {
+      // Fired when the socket connects.
+    },
+
+    disconnect() {},
+
+    // Fired when the server sends something on the "messageChannel" channel.
+    chat(data) {
+      if (data.senderId != this.recipientId) {
+        return;
+      } 
+      this.messages = [...this.messages, data];
+      this.$nextTick(() => this.scrollToEnd());
+    },
+  },
+  mounted() {
+    this.getMessages();
+    this.getUserInfo();
+  },
+  watch: {
+    recipientId: function () {
+      this.getMessages();
+      this.getUserInfo();
+    },
+  },
   methods: {
-    checkIfLoggedInUser: function (name) {
-      return name == "Natasa";
+    checkIfLoggedInUser: function (senderId) {
+      const loggedInUserId = localStorage.getItem("id");
+      return loggedInUserId == senderId;
     },
-    getMessages: function () {
-      return this.messages.filter((x) => x.chatId === this.chatId);
+    getMessages() {
+      this.axios
+        .get(messagesUrl + this.senderId + "/" + this.recipientId)
+        .then((response) => {
+          this.messages = response.data.messages;
+          this.chatRoomId = response.data.chatRoomId;
+          this.$nextTick(() => this.scrollToEnd());
+        });
     },
-    getConnectionInitials() {
-      return this.connectionName.split(" ").reduce((p, c) => p + c[0], "");
+    getUserInfo() {
+      this.axios.get(usersUrl + this.recipientId).then((response) => {
+        this.connectionName =
+          response.data.firstName + " " + response.data.lastName;
+      });
+    },
+    getConnectionInitials(name) {
+      return name?.split(" ").reduce((p, c) => p + c[0], "") || "";
     },
     sendMessage() {
       if (this.message === "") {
         return;
       }
-      alert("sent message: " + this.message);
+      let msg = {
+        senderId: this.senderId,
+        recipientId: this.recipientId,
+        content: this.message,
+        chatId: this.chatRoomId,
+      };
+      this.$socket.emit("chat", msg);
+      this.messages = [...this.messages, msg];
       this.message = "";
+    },
+    scrollToEnd: function () {
+      // scroll to the start of the last message
+      if (!this.messages.length) {
+        return;
+      }
+      console.log(this.$refs.list);
+      const listElement = this.$refs.list;
+      const offset = listElement.lastElementChild.offsetTop;
+      console.log(offset);
+      this.$refs.list.scrollTop = offset;
     },
   },
 };
@@ -188,6 +182,7 @@ export default {
 
 .scrollable-list {
   overflow-y: auto;
+  min-height: calc(100vh - 430px);
   max-height: calc(100vh - 430px);
 }
 

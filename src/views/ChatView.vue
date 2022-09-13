@@ -14,7 +14,7 @@
       <v-container fluid class="content-container">
       <v-row no-gutters dense>
         <v-col cols="3">
-          <connection-list />
+          <chat-connection-list />
         </v-col>
         <!-- <v-divider vertical /> -->
         <v-col cols="9">
@@ -26,12 +26,12 @@
 </template>
 
 <script>
-import ConnectionList from "@/components/chat/ConnectionList.vue";
+import ChatConnectionList from "@/components/chat/ChatConnectionList.vue";
 
 export default {
   name: "ChatView",
   components: {
-    ConnectionList,
+    ChatConnectionList,
   },
 };
 </script>
