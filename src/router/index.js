@@ -16,6 +16,7 @@ import BlockedConnectionsView from "@/views/connections/BlockedConnectionsView.v
 import ConnectionRequestsView from "@/views/connections/ConnectionRequestsView.vue";
 import ChatView from "@/views/ChatView.vue";
 import ChatRoom from "@/components/chat/ChatRoom.vue";
+import NotificationsView from "@/views/NotificationsView.vue";
 
 Vue.use(VueRouter);
 
@@ -100,6 +101,11 @@ const routes = [
           },
         ],
       },
+      {
+        component: NotificationsView,
+        name: "NotificationsView",
+        path: "/notifications"
+      }
     ]
   }
 ];

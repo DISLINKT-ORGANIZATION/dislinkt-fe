@@ -1,11 +1,14 @@
 <template>
-  <v-snackbar :color="color" v-model="showSnackbar" top middle>
+  <v-snackbar :color="color" v-model="showSnackbar" top middle >
     <v-icon left>{{ icon }}</v-icon
     >{{ message }}
 
     <template v-slot:action="{ attrs }">
       <v-btn color="white" text v-bind="attrs" @click="showSnackbar = false">
         Close
+      </v-btn>
+      <v-btn v-if="notification" color="white" text v-bind="attrs" @click="onClickHandler">
+        Check
       </v-btn>
     </template>
   </v-snackbar>
@@ -21,27 +24,69 @@ export default {
       color: "success",
       icon: "mdi-check",
       timer: 3000,
+      onClick: () => {},
+      notification: false
     };
   },
   methods: {
     success(message) {
+      this.notification = false;
       this.color = "success";
       this.icon = "mdi-check";
       this.message = message || "Successfully finished the operation!";
       this.showSnackbar = true;
     },
     error(message) {
+      this.notification = false;
       this.color = "error";
       this.icon = "mdi-close";
       this.message = message || "An error has ocurred!";
       this.showSnackbar = true;
     },
     warning(message) {
+      this.notification = false;
       this.color = "warning";
       this.icon = "mdi-alert";
       this.message = message || "An error has ocurred!";
       this.showSnackbar = true;
     },
+    notification_message(callback) {
+      this.notification = true;
+      this.color = "primary";
+      this.icon = "mdi-message";
+      this.message = "You have received a new message!";
+      this.showSnackbar = true;
+      this.onClick = callback;
+    },
+    notification_connection_request(callback) {
+      this.notification = true;
+      this.color = "primary";
+      this.icon = "mdi-message";
+      this.message = "New connection request for you!";
+      this.showSnackbar = true;
+      this.onClick = callback;
+    },
+    notification_new_post(callback) {
+      this.notification = true;
+      this.color = "primary";
+      this.icon = "mdi-message";
+      this.message = "New post from your connection!";
+      this.showSnackbar = true;
+      this.onClick = callback;
+    },
+    notification_post_like(callback) {
+      this.notification = true;
+      this.color = "primary";
+      this.icon = "mdi-message";
+      this.message = "Your post is getting noticed!";
+      this.showSnackbar = true;
+      this.onClick = callback;
+    },
+    onClickHandler() {
+      this.showSnackbar = false;
+      this.onClick();
+    }
+
   },
 };
 </script>
