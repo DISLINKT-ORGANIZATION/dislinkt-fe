@@ -19,6 +19,11 @@
           <v-icon>mdi-message-outline</v-icon>
         </v-btn>
       </router-link>
+      <router-link :to="{ name: 'NotificationsView' }" v-slot="{ navigate }">
+        <v-btn class="ml-3" icon @click="navigate">
+          <v-icon>mdi-bell-outline</v-icon>
+        </v-btn>
+      </router-link>
       <v-btn class="ml-3" icon @click="logout()">
         <v-icon>mdi-logout</v-icon>
       </v-btn>
@@ -32,6 +37,7 @@
 </template>
 
 <script>
+import VueSocketIO from "vue-socket.io";
 import NavigationBar from "@/components/nav/NavigationBar.vue";
 const apiURL = "auth-service/authentication/users/";
 
@@ -47,15 +53,28 @@ export default {
         firstName: String,
         lastName: String,
         username: String
-      }
+      },
+      socket: undefined
     };
   },
   mounted() {
     this.getLoggedInUser();
+    this.socket = new VueSocketIO({
+      debug: true,
+      connection:
+        "http://localhost:8187/notification?room=" + localStorage.getItem("id"),
+    });
+    this.socket.emitter.addListener("notification", function (data) {
+      console.log(data);
+      this.$root.snackbar.notification_message(function() {
+        this.$router.push({ name: "ChatRoom", params: { recipientId: data.senderId } });
+      });
+    }, this);
   },
   methods: {
     logout() {
       localStorage.clear();
+      this.socket.io.disconnect();
       this.$router.push({ name: "LoginView" });
     },
     checkRequests() {
@@ -71,6 +90,11 @@ export default {
       }).catch((error) => {
         this.$root.snackbar.error(error.response.data.message);
       })
+    },
+    redirect(data) {
+      // logika za filterovanje eventova
+      alert(data.senderId + " " + data.recipientId);
+      this.$router.push({ name: "ChatRoom", params: { recipientId: data.senderId } });
     }
   }
 };

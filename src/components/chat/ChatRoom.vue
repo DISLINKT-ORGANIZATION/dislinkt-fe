@@ -61,14 +61,6 @@
 
 <script>
 import VueSocketIO from "vue-socket.io";
-import Vue from "vue";
-
-Vue.use(
-  new VueSocketIO({
-    debug: true,
-    connection: "http://localhost:8186/chat?room=" + localStorage.getItem("id"),
-  })
-);
 
 const messagesUrl = "messaging-service/chat-room/";
 const usersUrl = "auth-service/authentication/users/";
@@ -88,27 +80,30 @@ export default {
       messageData: {},
       messages: [],
       connectionName: undefined,
+      socket: undefined,
     };
-  },
-  sockets: {
-    connect() {
-      // Fired when the socket connects.
-    },
-
-    disconnect() {},
-
-    // Fired when the server sends something on the "messageChannel" channel.
-    chat(data) {
-      if (data.senderId != this.recipientId) {
-        return;
-      } 
-      this.messages = [...this.messages, data];
-      this.$nextTick(() => this.scrollToEnd());
-    },
   },
   mounted() {
     this.getMessages();
     this.getUserInfo();
+    this.socket = new VueSocketIO({
+      debug: true,
+      connection:
+        "http://localhost:8186/chat?room=" + localStorage.getItem("id"),
+    });
+    this.socket.emitter.addListener("chat", function (data) {
+      if (data.senderId != this.recipientId) {
+        return;
+      }
+      console.log(this.socket);
+      this.messages = [...this.messages, data];
+      this.$nextTick(() => this.scrollToEnd());
+    }, this);
+  },
+  beforeDestroy() {
+    console.log("destroyeeeer before");
+    this.socket.io.disconnect();
+    console.log("destroyeeeer after");
   },
   watch: {
     recipientId: function () {
@@ -149,9 +144,11 @@ export default {
         content: this.message,
         chatId: this.chatRoomId,
       };
-      this.$socket.emit("chat", msg);
+      console.log(this.socket);
+      this.socket.io.emit("chat", msg);
       this.messages = [...this.messages, msg];
       this.message = "";
+      this.$nextTick(() => this.scrollToEnd());
     },
     scrollToEnd: function () {
       // scroll to the start of the last message
