@@ -1,22 +1,10 @@
 <template lang="">
-  <!-- <div>
-    <v-card class="chat-view mt-10 mb-10 ml-10 mr-10" height="90%">
-      <div class="connection-list">
-        <connection-list />
-      </div>
-      <v-divider vertical></v-divider>
-      <div class="chat">
-        <router-view />
-      </div>
-    </v-card>
-  </div> -->
     <v-card class="card-container" >
       <v-container fluid class="content-container">
       <v-row no-gutters dense>
         <v-col cols="3">
           <chat-connection-list />
         </v-col>
-        <!-- <v-divider vertical /> -->
         <v-col cols="9">
           <router-view />
         </v-col>
