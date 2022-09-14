@@ -12,8 +12,6 @@
     "core-js": "^3.6.5",
     "moment": "^2.29.4",
     "npm": "^8.18.0",
-    "socket.io": "^4.5.2",
-    "socket.io-client": "^4.5.2",
     "vue": "^2.6.11",
     "vue-axios": "^3.4.1",
     "vue-router": "^3.5.4",
