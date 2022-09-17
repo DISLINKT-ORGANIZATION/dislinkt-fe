@@ -19,6 +19,9 @@
 
 <script>
 // import PersonaAvatar from '../PersonaAvatar.vue';
+const postCommentApi = "post-service/posts/";
+const usersUrl = "auth-service/authentication/users/";
+
 export default {
   name: "CreateComment",
   components: {
@@ -26,16 +29,48 @@ export default {
   },
   props: {
     name: String,
-    avatar: String
+    avatar: String,
+    postId: String,
+    handleCommentAdded: Function,
   },
   data() {
     return {
       message: "",
+      firstName: "",
+      lastName: ""
     };
+  },
+  mounted() {
+    this.getUserInfo();
   },
   methods: {
     sendMessage: function () {
-      alert("hai " + this.message);
+      this.axios
+        .post(postCommentApi + this.postId + "/comment", {
+          userId: localStorage.getItem("id"),
+          content: this.message,
+        })
+        .then((response) => {
+          console.log(response.data);
+          let comment = {
+            id: response.data.id,
+            userId: response.data.userId,
+            content: response.data.content,
+            firstName: this.firstName,
+            lastName: this.lastName,
+          }
+          
+          this.handleCommentAdded(comment);
+          this.message = "";
+        });
+    },
+    getUserInfo() {
+      const userId = localStorage.getItem("id");
+      this.axios.get(usersUrl + userId).then((response) => {
+        console.log(response.data);
+        this.firstName = response.data.firstName
+        this.lastName = response.data.lastName;
+      });
     },
   },
 };
@@ -49,7 +84,7 @@ export default {
   overflow: auto;
 }
 .avatar {
-    margin-right: 6px;
-    width: 80;
+  margin-right: 6px;
+  width: 80;
 }
 </style>

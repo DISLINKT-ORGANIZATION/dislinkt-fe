@@ -1,9 +1,9 @@
 <template>
   <div class="comment-container">
-    <template v-for="(comment, index) in comments">
+    <template v-for="(comment, index) in newComments">
       <comment v-bind:key="index" v-bind="comment" />
     </template>
-    <create-comment />
+    <create-comment v-bind:handleCommentAdded="handleCommentAdded" v-bind:postId="postId"/>
   </div>
 </template>
 <script>
@@ -15,10 +15,18 @@ export default {
   components: { Comment, CreateComment },
   props: {
     comments: Array,
+    postId: String
   },
   data() {
-    return {};
+    return {
+      newComments: [...this.comments]
+    };
   },
+  methods: {
+    handleCommentAdded(comment) {
+      this.newComments = [...this.newComments, comment];
+    }
+  }
 };
 </script>
 
