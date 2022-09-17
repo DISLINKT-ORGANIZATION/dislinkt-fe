@@ -148,28 +148,23 @@ export default {
       pictures: [],
       pictureData: [],
       showPictureOverlay: [],
-      userId: localStorage.getItem("id")
+      userId: localStorage.getItem("id"),
     };
   },
   methods: {
     submitPost: function () {
       if (this.postContent.length === 0) {
-        alert("cant do this");
         return;
       }
       let postObj = {
         userId: Number(this.userId),
         text: this.postContent,
       };
-      console.log(JSON.stringify(postObj));
       let formData = new FormData();
-      formData.append("body", new Blob([JSON.stringify(
-            postObj                   
-        )], {type:"application/json"}));
-      // formData.append("body", new Blob([JSON.stringify(postObj)]), {
-      //   type: "application/json"
-      // });
-      console.log(...formData);
+      formData.append(
+        "body",
+        new Blob([JSON.stringify(postObj)], { type: "application/json" })
+      );
       let picture = {};
       if (this.pictures.length) {
         picture = this.pictures[0];
@@ -182,16 +177,11 @@ export default {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then(() => {
-          alert("ok!");
+          this.$router.push({
+            name: "ProfileView",
+            params: { id: this.userId },
+          });
         });
-
-      //     @PreAuthorize("hasRole('ROLE_TEACHER')")
-      // @PostMapping
-      // public ResponseEntity<QuestionDto> createQuestion(@RequestPart(value="body") QuestionDto dto, @RequestPart(value = "file") MultipartFile file) throws IOException {
-      // 	dto.setPicture(file.getBytes());
-      // 	QuestionDto question = questionService.create(dto);
-      // 	return new ResponseEntity<>(question, HttpStatus.CREATED);
-      // }
     },
     handleFileImport: function () {
       // from https://ourcodeworld.com/articles/read/1424/how-to-use-a-button-as-a-file-uploader-with-vuetify-in-vuejs#disqus_thread

@@ -139,7 +139,7 @@ export default {
       this.urlList.forEach(({ word, url }, indx) => {
         contentPreFormat = contentPreFormat.replace(
           `{url-${indx}}`,
-          `<a href="${url}">${word}</a>`
+          `<a target="_blank" href="${url}">${word}</a>`
         );
       });
       return contentPreFormat;
