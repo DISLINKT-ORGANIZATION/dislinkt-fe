@@ -26,4 +26,10 @@ export default {
 };
 </script>
 <style scoped>
+.avatar {
+  font-size: 18px;
+  font-weight: bold;
+  font-family: "Baloo2", Helvetica, Arial;
+}
+
 </style>
