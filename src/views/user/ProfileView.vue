@@ -75,7 +75,7 @@
                 </template>
           </v-card-title>
           <v-divider class="ml-5 mr-5"></v-divider>
-          <v-card-text v-if="publicAccount || userConnected">
+          <v-card-text v-if="publicAccount || userConnected || isCurrentUser()">
             <v-tabs v-model="tab" centered icons-and-text color="#8C9EFF">
               <v-tabs-slider></v-tabs-slider>
 
@@ -211,8 +211,6 @@ export default {
       if (previousValue === undefined) {
         return;
       }
-      console.log('poziva se')
-
       this.axios.put(apiChangePublic + this.id);
     }
   },
@@ -370,8 +368,9 @@ export default {
       this.$router.push({ name: "ChatRoom", params: { recipientId: this.id } });
     },
     isCurrentUser() {
-      console.log('ISCURRENT USER ', localStorage.getItem('id') === this.id)
-      return localStorage.getItem('id') === this.id && this.accountId !== '';
+      console.log('ISCURRENT USER ', localStorage.getItem('id') == this.id)
+      console.log(this.id)
+      return localStorage.getItem('id') == this.id && this.accountId != '';
     }
   },
 };
