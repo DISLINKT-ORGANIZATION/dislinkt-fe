@@ -64,6 +64,7 @@ import VueSocketIO from "vue-socket.io";
 
 const messagesUrl = "messaging-service/chat-room/";
 const usersUrl = "auth-service/authentication/users/";
+const connectionsUrl = "account-service/connections/check-muted-messages/";
 
 export default {
   name: "ChatRoom",
@@ -79,6 +80,7 @@ export default {
       stompClient: {},
       messageData: {},
       messages: [],
+      sendNotification: false,
       connectionName: undefined,
       socket: undefined,
     };
@@ -86,6 +88,7 @@ export default {
   mounted() {
     this.getMessages();
     this.getUserInfo();
+    this.checkIfMuted();
     this.socket = new VueSocketIO({
       debug: true,
       connection:
@@ -105,6 +108,7 @@ export default {
   },
   watch: {
     recipientId: function () {
+      this.checkIfMuted();
       this.getMessages();
       this.getUserInfo();
     },
@@ -113,6 +117,14 @@ export default {
     checkIfLoggedInUser: function (senderId) {
       const loggedInUserId = localStorage.getItem("id");
       return loggedInUserId == senderId;
+    },
+    checkIfMuted() {
+      this.axios.get(
+        connectionsUrl + this.recipientId + "/" + this.senderId
+      ).then((response) => {
+        console.log('SHOULD MUTE MESSAGES - ', response.data)
+        this.sendNotification = !response.data;
+      })
     },
     getMessages() {
       this.axios
@@ -141,6 +153,7 @@ export default {
         recipientId: this.recipientId,
         content: this.message,
         chatId: this.chatRoomId,
+        sendNotification: this.sendNotification
       };
       console.log(this.socket);
       this.socket.io.emit("chat", msg);

@@ -93,7 +93,6 @@ export default {
     },
     redirect(data) {
       // logika za filterovanje eventova
-      alert(data.senderId + " " + data.recipientId);
       this.$router.push({ name: "ChatRoom", params: { recipientId: data.senderId } });
     }
   }

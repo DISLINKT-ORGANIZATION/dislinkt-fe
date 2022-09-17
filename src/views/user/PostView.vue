@@ -20,7 +20,7 @@ export default {
   data: function () {
     return {
       posts: [],
-      loggedInUserId: localStorage.get("id")
+      loggedInUserId: localStorage.getItem("id")
     };
   },
   async mounted() {
