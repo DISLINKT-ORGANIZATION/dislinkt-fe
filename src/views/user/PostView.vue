@@ -20,6 +20,7 @@ export default {
   data: function () {
     return {
       posts: [],
+      loggedInUserId: localStorage.get("id")
     };
   },
   async mounted() {
@@ -72,7 +73,7 @@ export default {
       });
     },
     async getPosts(ids) {
-      return this.axios.post(postsApi, { ids: ids });
+      return this.axios.post(postsApi, { ids: ids, loggedInUserId: this.loggedInUserId });
     },
     async getBlockedAccounts() {
       return this.axios.get(accountApi + this.userId + "/blocked-accounts");

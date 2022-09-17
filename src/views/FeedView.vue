@@ -72,7 +72,7 @@ export default {
       });
     },
     async getPosts(ids) {
-      return this.axios.post(postsApi, { ids: ids });
+      return this.axios.post(postsApi, { ids: ids, loggedInUserId: this.userId });
     },
     async getBlockedAccounts() {
       return this.axios.get(accountApi + this.userId + "/blocked-accounts");

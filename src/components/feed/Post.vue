@@ -27,14 +27,14 @@
         <v-row align="center" justify="start">
           <v-btn class="mr-1" icon @click="thumbsUp()">
             <v-icon>
-              {{ userLikesPost ? "mdi-thumb-up" : "mdi-thumb-up-outline" }}
+              {{ userLikesPostStatus ? "mdi-thumb-up" : "mdi-thumb-up-outline" }}
             </v-icon>
           </v-btn>
           <span class="subheading mr-4">{{ postLikes }}</span>
           <v-btn class="mr-1" icon @click="thumbsDown()">
             <v-icon>
               {{
-                userDislikesPost ? "mdi-thumb-down" : "mdi-thumb-down-outline"
+                userDislikesPostStatus ? "mdi-thumb-down" : "mdi-thumb-down-outline"
               }}
             </v-icon>
           </v-btn>
@@ -53,6 +53,7 @@
       v-if="showComments"
       class="comment-section"
       v-bind:comments="comments"
+      v-bind:postId="id"
     />
   </v-card>
 </template>
@@ -61,6 +62,7 @@
 import PersonaAvatar from "@/components/user/PersonaAvatar.vue";
 import CommentList from "./CommentList.vue";
 
+const postApi = "post-service/posts/"
 const wrapNumberOfWords = 50;
 
 export default {
@@ -78,14 +80,16 @@ export default {
     dislikes: Number,
     comments: Array,
     image: String,
-    postWidth: String
+    postWidth: String,
+    userLikesPost: Boolean,
+    userDislikesPost: Boolean,
   },
   data() {
     return {
       postLikes: this.likes,
       postDislikes: this.dislikes,
-      userLikesPost: false,
-      userDislikesPost: false,
+      userLikesPostStatus: this.userLikesPost,
+      userDislikesPostStatus: this.userDislikesPost,
       showFullContent: false,
       showComments: false,
       formattedContent: "",
@@ -147,31 +151,48 @@ export default {
       this.showFullContent = !this.showFullContent;
     },
     thumbsUp: function () {
-      if (this.userLikesPost) {
-        this.userLikesPost = false;
+      if (this.userLikesPostStatus) {
+        this.userLikesPostStatus = false;
         this.postLikes = this.postLikes - 1;
+        this.sendReaction(0, true);
       } else {
-        this.userLikesPost = true;
+        this.userLikesPostStatus = true;
         this.postLikes = this.postLikes + 1;
-        if (this.userDislikesPost) {
+        if (this.userDislikesPostStatus) {
           this.postDislikes = this.postDislikes - 1;
-          this.userDislikesPost = false;
+          this.userDislikesPostStatus = false;
         }
+        this.sendReaction(0, false);
       }
     },
     thumbsDown: function () {
-      if (this.userDislikesPost) {
-        this.userDislikesPost = false;
+      if (this.userDislikesPostStatus) {
+        this.userDislikesPostStatus = false;
         this.postDislikes = this.postDislikes - 1;
+        this.sendReaction(1, true);
       } else {
-        this.userDislikesPost = true;
+        this.userDislikesPostStatus = true;
         this.postDislikes = this.postDislikes + 1;
-        if (this.userLikesPost) {
+        if (this.userLikesPostStatus) {
           this.postLikes = this.postLikes - 1;
-          this.userLikesPost = false;
+          this.userLikesPostStatus = false;
         }
+        this.sendReaction(1, false);
       }
     },
+    sendReaction(reactionType, deletion) {
+      this.axios.post(
+        postApi + this.id + "/reaction",
+        {
+          userId: localStorage.getItem("id"),
+          reaction: reactionType,
+          removeReaction: deletion
+        }
+      ).catch((error) => {
+        console.log(error);
+        this.$root.snackbar.error();
+      })
+    } 
   },
 };
 </script>
