@@ -35,7 +35,7 @@
         color="primary"
         class="description"
       >
-        <router-link :to="{ name: 'Home' }" v-slot="{ navigate }">
+        <router-link :to="{ name: 'FeedView' }" v-slot="{ navigate }">
           <v-list-item @click="navigate">
             <v-list-item-icon>
               <v-icon>mdi-home-outline</v-icon>

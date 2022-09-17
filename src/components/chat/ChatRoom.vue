@@ -101,9 +101,7 @@ export default {
     }, this);
   },
   beforeDestroy() {
-    console.log("destroyeeeer before");
     this.socket.io.disconnect();
-    console.log("destroyeeeer after");
   },
   watch: {
     recipientId: function () {

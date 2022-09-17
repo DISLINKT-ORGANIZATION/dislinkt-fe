@@ -97,7 +97,7 @@
 
             <v-tabs-items v-model="tab">
               <v-tab-item>
-                <div>Postssss</div>
+                <post-view v-bind:userId="id" />
               </v-tab-item>
               <v-tab-item>
                 <account-form v-bind:userId="id" v-bind:editable="false" />
@@ -146,6 +146,7 @@ import SkillCard from "@/components/user/SkillCard.vue";
 import WorkingExperienceCard from "@/components/user/WorkingExperienceCard.vue";
 import BiographyCard from "@/components/user/BiographyCard.vue";
 import SettingsMenu from "@/components/SettingsMenu.vue";
+import PostView from "@/views/user/PostView.vue";
 
 const apiGetUser = "auth-service/authentication/users/";
 const apiURLGetResume = "account-service/accounts/user/";
@@ -160,6 +161,7 @@ export default {
     WorkingExperienceCard,
     BiographyCard,
     SettingsMenu,
+    PostView
   },
   data() {
     return {

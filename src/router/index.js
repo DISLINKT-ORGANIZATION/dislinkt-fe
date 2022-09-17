@@ -17,6 +17,7 @@ import ConnectionRequestsView from "@/views/connections/ConnectionRequestsView.v
 import ChatView from "@/views/ChatView.vue";
 import ChatRoom from "@/components/chat/ChatRoom.vue";
 import NotificationsView from "@/views/NotificationsView.vue";
+import FeedView from "@/views/FeedView.vue";
 
 Vue.use(VueRouter);
 
@@ -87,6 +88,11 @@ const routes = [
         component: ConnectionRequestsView,
         name: "ConnectionRequestsView",
         path: "/connection-requests",
+      },
+      {
+        component: FeedView,
+        name: "FeedView",
+        path: "/feed",
       },
       {
         component: ChatView,
