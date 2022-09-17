@@ -134,6 +134,8 @@
 
 <script>
 const postApi = "post-service/posts";
+const accountApi = "account-service/connections/";
+const muteApi = "account-service/connections/check-muted-posts/";
 
 export default {
   name: "CreatePost",
@@ -152,13 +154,15 @@ export default {
     };
   },
   methods: {
-    submitPost: function () {
+    submitPost: async function () {
       if (this.postContent.length === 0) {
         return;
       }
+      const usersToNotify = await this.getNonMutedConnections();
       let postObj = {
         userId: Number(this.userId),
         text: this.postContent,
+        usersToNotify: usersToNotify
       };
       let formData = new FormData();
       formData.append(
@@ -234,6 +238,24 @@ export default {
       this.urlDialog = false;
       this.urlText = "";
       this.urlAddress = "";
+    },
+    async getNonMutedConnections() {
+      const connectionUserIds = (
+        await this.axios.get(accountApi + this.userId)
+      ).data.map((e) => e.userConnectionId);
+      const promiseList = [];
+      connectionUserIds.forEach((userId) => {
+        promiseList.push(this.axios.get(muteApi + userId + "/" + this.userId));
+      });
+      const responses = await Promise.all(promiseList);
+      const usersToNotify = []
+      responses.forEach((response, indx) => {
+        if (!response.data) {
+          usersToNotify.push(connectionUserIds[indx]);
+        }
+      });
+      console.log(usersToNotify);
+      return usersToNotify;
     },
   },
 };
