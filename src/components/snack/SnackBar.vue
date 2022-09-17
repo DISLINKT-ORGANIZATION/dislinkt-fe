@@ -53,7 +53,7 @@ export default {
     notification_message(callback) {
       this.notification = true;
       this.color = "primary";
-      this.icon = "mdi-message";
+      this.icon = "mdi-email";
       this.message = "You have received a new message!";
       this.showSnackbar = true;
       this.onClick = callback;
@@ -61,7 +61,7 @@ export default {
     notification_connection_request(callback) {
       this.notification = true;
       this.color = "primary";
-      this.icon = "mdi-message";
+      this.icon = "mdi-account-plus";
       this.message = "New connection request for you!";
       this.showSnackbar = true;
       this.onClick = callback;
@@ -69,7 +69,7 @@ export default {
     notification_new_post(callback) {
       this.notification = true;
       this.color = "primary";
-      this.icon = "mdi-message";
+      this.icon = "mdi-note-text";
       this.message = "New post from your connection!";
       this.showSnackbar = true;
       this.onClick = callback;
@@ -77,8 +77,16 @@ export default {
     notification_post_like(callback) {
       this.notification = true;
       this.color = "primary";
-      this.icon = "mdi-message";
-      this.message = "Your post is getting noticed!";
+      this.icon = "mdi-thumb-up";
+      this.message = "New like on your post!";
+      this.showSnackbar = true;
+      this.onClick = callback;
+    },
+    notification_post_comment(callback) {
+      this.notification = true;
+      this.color = "primary";
+      this.icon = "mdi-comment-text";
+      this.message = "New comment on your post!";
       this.showSnackbar = true;
       this.onClick = callback;
     },

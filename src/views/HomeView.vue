@@ -28,8 +28,8 @@
         <v-icon>mdi-logout</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-main class="blue-grey lighten-5 content"> 
-      <v-container fluid class="main-container"> 
+    <v-main class="blue-grey lighten-5 content">
+      <v-container fluid class="main-container">
         <router-view></router-view>
       </v-container>
     </v-main>
@@ -52,9 +52,9 @@ export default {
       user: {
         firstName: String,
         lastName: String,
-        username: String
+        username: String,
       },
-      socket: undefined
+      socket: undefined,
     };
   },
   mounted() {
@@ -64,12 +64,55 @@ export default {
       connection:
         "http://localhost:8187/notification?room=" + localStorage.getItem("id"),
     });
-    this.socket.emitter.addListener("notification", function (data) {
-      console.log(data);
-      this.$root.snackbar.notification_message(function() {
-        this.$router.push({ name: "ChatRoom", params: { recipientId: data.senderId } });
-      });
-    }, this);
+    this.socket.emitter.addListener(
+      "notification",
+      function (data) {
+        console.log(data);
+        switch (data.notificationType) {
+          case "MESSAGE_SENT":
+            this.$root.snackbar.notification_message(function () {
+              this.$router.push({
+                name: "ChatRoom",
+                params: { recipientId: data.senderId },
+              });
+            });
+            break;
+          case "NEW_POST":
+            this.$root.snackbar.notification_new_post(function () {
+              this.$router.push({
+                name: "ProfileView",
+                params: { id: data.senderId },
+              });
+            });
+            break;
+          case "LIKE":
+            this.$root.snackbar.notification_post_like(function () {
+              this.$router.push({
+                name: "ProfileView",
+                params: { id: data.recipientId },
+              });
+            });
+            break;
+          case "COMMENT":
+            this.$root.snackbar.notification_post_comment(function () {
+              this.$router.push({
+                name: "ProfileView",
+                params: { id: data.recipientId },
+              });
+            });
+            break;
+          case "CONNECTION_REQUEST":
+            this.$root.snackbar.notification_connection_request(function () {
+              this.$router.push({
+                name: "ProfileView",
+                params: { id: data.recipientId },
+              });
+            });
+            break;
+        }
+      },
+      this
+    );
   },
   methods: {
     logout() {
@@ -83,19 +126,16 @@ export default {
     getLoggedInUser() {
       let userId = localStorage.getItem("id");
       console.log(userId);
-      this.axios.get(
-          apiURL + userId
-      ).then((response) => {
-        this.user = response.data;
-      }).catch((error) => {
-        this.$root.snackbar.error(error.response.data.message);
-      })
+      this.axios
+        .get(apiURL + userId)
+        .then((response) => {
+          this.user = response.data;
+        })
+        .catch((error) => {
+          this.$root.snackbar.error(error.response.data.message);
+        });
     },
-    redirect(data) {
-      // logika za filterovanje eventova
-      this.$router.push({ name: "ChatRoom", params: { recipientId: data.senderId } });
-    }
-  }
+  },
 };
 </script>
 
