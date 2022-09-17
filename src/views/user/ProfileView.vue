@@ -41,6 +41,7 @@
                   elevation="2"
                   height="40px"
                   width="100px"
+                  @click="redirectToConnection()"
                   ><b>MESSAGE</b></v-btn
                 >
                 <!-- <v-btn fab small elevation="2" color="#C62828" dark
@@ -63,6 +64,15 @@
                 </template>
               </span>
             </v-list-item-content>
+            <template v-if="isCurrentUser()">
+                  <span class="mr-5">
+                    <v-switch
+                      v-model="publicAccount"
+                      color="#8C9EFF"
+                      label="Public account"
+                    ></v-switch>
+                  </span>
+                </template>
           </v-card-title>
           <v-divider class="ml-5 mr-5"></v-divider>
           <v-card-text v-if="publicAccount || userConnected">
@@ -151,6 +161,8 @@ import PostView from "@/views/user/PostView.vue";
 const apiGetUser = "auth-service/authentication/users/";
 const apiURLGetResume = "account-service/accounts/user/";
 const apiGetConnections = "account-service/connections/";
+const apiChangePublic = "account-service/accounts/privacy/";
+
 export default {
   name: "ProfileView",
   components: {
@@ -161,7 +173,7 @@ export default {
     WorkingExperienceCard,
     BiographyCard,
     SettingsMenu,
-    PostView
+    PostView,
   },
   data() {
     return {
@@ -169,7 +181,7 @@ export default {
       firstName: "",
       lastName: "",
       biography: "",
-      publicAccount: false,
+      publicAccount: undefined,
       tab: null,
       accountId: "",
       connectionNumber: 0,
@@ -195,6 +207,14 @@ export default {
       this.getConnections();
       this.checkIfUserConnected();
     },
+    publicAccount(newValue, previousValue) {
+      if (previousValue === undefined) {
+        return;
+      }
+      console.log('poziva se')
+
+      this.axios.put(apiChangePublic + this.id);
+    }
   },
   methods: {
     getUserInfo() {
@@ -276,8 +296,8 @@ export default {
       this.axios
         .get(apiURLGetResume + this.id)
         .then((response) => {
-          this.accountId = response.data.id;
           this.publicAccount = response.data.publicAccount;
+          this.accountId = response.data.id;
         })
         .catch(() => {
           this.$root.snackbar.error();
@@ -346,6 +366,13 @@ export default {
           this.$root.snackbar.error("Something went wrong");
         });
     },
+    redirectToConnection() {
+      this.$router.push({ name: "ChatRoom", params: { recipientId: this.id } });
+    },
+    isCurrentUser() {
+      console.log('ISCURRENT USER ', localStorage.getItem('id') === this.id)
+      return localStorage.getItem('id') === this.id && this.accountId !== '';
+    }
   },
 };
 </script>
