@@ -11,7 +11,7 @@
         >DISLINKT</v-toolbar-title
       >
       <v-spacer />
-      <template v-if="isLoggedIn()">
+      <template v-if="isLoggedIn() && user.role === 'ROLE_USER'" >
         <v-btn class="ml-3" icon @click="checkRequests()">
           <v-icon>mdi-account-outline</v-icon>
         </v-btn>
