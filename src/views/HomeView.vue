@@ -101,11 +101,18 @@ export default {
               });
             });
             break;
+          case "NEW_CONNECTION":
+            this.$root.snackbar.notification_follow(function () {
+              this.$router.push({
+                name: "ProfileView",
+                params: { id: data.senderId },
+              });
+            });
+            break;
           case "CONNECTION_REQUEST":
             this.$root.snackbar.notification_connection_request(function () {
               this.$router.push({
-                name: "ProfileView",
-                params: { id: data.recipientId },
+                name: "ConnectionRequestsView",
               });
             });
             break;
