@@ -18,7 +18,8 @@ import ChatView from "@/views/ChatView.vue";
 import ChatRoom from "@/components/chat/ChatRoom.vue";
 import NotificationsView from "@/views/NotificationsView.vue";
 import FeedView from "@/views/FeedView.vue";
-
+import ExploreJobOffersView from "@/views/job-offers/ExploreJobOffersView.vue";
+import JobOfferView from "@/views/job-offers/JobOfferView";
 Vue.use(VueRouter);
 
 const routes = [
@@ -41,27 +42,27 @@ const routes = [
       {
         component: AccountView,
         name: "AccountView",
-        path: "/account"
+        path: "/account",
       },
       {
         component: SkillsView,
         name: "SkillsView",
-        path: "/skills"
+        path: "/skills",
       },
       {
         component: WorkingExperienceView,
         name: "WorkingExperienceView",
-        path: "/working-experience"
+        path: "/working-experience",
       },
       {
         component: EducationView,
         name: "EducationView",
-        path: "/education"
+        path: "/education",
       },
       {
         component: BiographyView,
         name: "BiographyView",
-        path: "/biography"
+        path: "/biography",
       },
       {
         component: ProfileView,
@@ -72,7 +73,7 @@ const routes = [
       {
         component: ExploreConnectionsView,
         name: "ExploreConnectionsView",
-        path: "/explore-connections"
+        path: "/explore-connections",
       },
       {
         component: MyConnectionsView,
@@ -110,10 +111,21 @@ const routes = [
       {
         component: NotificationsView,
         name: "NotificationsView",
-        path: "/notifications"
-      }
-    ]
-  }
+        path: "/notifications",
+      },
+      {
+        component: ExploreJobOffersView,
+        name: "ExploreJobOffersView",
+        path: "/offers",
+      },
+      {
+        component: JobOfferView,
+        name: "JobOfferView",
+        path: "/offer/:offerId",
+        props: true,
+      },
+    ],
+  },
 ];
 
 const router = new VueRouter({
