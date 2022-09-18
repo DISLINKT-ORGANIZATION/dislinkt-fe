@@ -1,6 +1,6 @@
 <template>
   <v-container class="container" fluid>
-    <v-navigation-drawer v-model="drawer" app>
+    <v-navigation-drawer v-model="drawer" app v-if="isLoggedIn()">
       <navigation-bar v-bind:user="user"></navigation-bar>
     </v-navigation-drawer>
 
@@ -11,22 +11,29 @@
         >DISLINKT</v-toolbar-title
       >
       <v-spacer />
-      <v-btn class="ml-3" icon @click="checkRequests()">
-        <v-icon>mdi-account-outline</v-icon>
-      </v-btn>
-      <router-link :to="{ name: 'ChatView' }" v-slot="{ navigate }">
-        <v-btn class="ml-3" icon @click="navigate">
-          <v-icon>mdi-message-outline</v-icon>
+      <template v-if="isLoggedIn()">
+        <v-btn class="ml-3" icon @click="checkRequests()">
+          <v-icon>mdi-account-outline</v-icon>
         </v-btn>
-      </router-link>
-      <router-link :to="{ name: 'NotificationsView' }" v-slot="{ navigate }">
-        <v-btn class="ml-3" icon @click="navigate">
-          <v-icon>mdi-bell-outline</v-icon>
+        <router-link :to="{ name: 'ChatView' }" v-slot="{ navigate }">
+          <v-btn class="ml-3" icon @click="navigate">
+            <v-icon>mdi-message-outline</v-icon>
+          </v-btn>
+        </router-link>
+        <router-link :to="{ name: 'NotificationsView' }" v-slot="{ navigate }">
+          <v-btn class="ml-3" icon @click="navigate">
+            <v-icon>mdi-bell-outline</v-icon>
+          </v-btn>
+        </router-link>
+        <v-btn class="ml-3" icon @click="logout()">
+          <v-icon>mdi-logout</v-icon>
         </v-btn>
-      </router-link>
-      <v-btn class="ml-3" icon @click="logout()">
-        <v-icon>mdi-logout</v-icon>
-      </v-btn>
+      </template>
+      <template v-else>
+        <v-btn class="ml-3" icon @click="redirectToLogin()">
+          <v-icon>mdi-login</v-icon>
+        </v-btn>
+      </template>
     </v-app-bar>
     <v-main class="blue-grey lighten-5 content">
       <v-container fluid class="main-container">
@@ -58,6 +65,9 @@ export default {
     };
   },
   mounted() {
+    if (!this.isLoggedIn()) {
+      return;
+    }
     this.getLoggedInUser();
     this.socket = new VueSocketIO({
       debug: true,
@@ -122,10 +132,13 @@ export default {
     );
   },
   methods: {
+    isLoggedIn() {
+      return localStorage.getItem("id") !== null;
+    },
     logout() {
       localStorage.clear();
       this.socket.io.disconnect();
-      this.$router.push({ name: "LoginView" });
+      this.$router.push({ name: "GuestView" });
     },
     checkRequests() {
       this.$router.push({ name: "ConnectionRequestsView" });
@@ -141,6 +154,9 @@ export default {
         .catch((error) => {
           this.$root.snackbar.error(error.response.data.message);
         });
+    },
+    redirectToLogin() {
+      this.$router.push({ name: "LoginView" });
     },
   },
 };

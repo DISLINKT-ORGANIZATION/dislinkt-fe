@@ -20,6 +20,9 @@ import NotificationsView from "@/views/NotificationsView.vue";
 import FeedView from "@/views/FeedView.vue";
 import ExploreJobOffersView from "@/views/job-offers/ExploreJobOffersView.vue";
 import JobOfferView from "@/views/job-offers/JobOfferView";
+import GuestView from "@/views/GuestView.vue";
+import PublicProfileView from "@/views/PublicProfileView.vue";
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -37,67 +40,72 @@ const routes = [
     component: HomeView,
     name: "HomeView",
     path: "/",
-    beforeEnter: guardRouteLoggedIn,
     children: [
       {
         component: AccountView,
         name: "AccountView",
+        beforeEnter: guardRouteLoggedIn,
         path: "/account",
       },
       {
         component: SkillsView,
         name: "SkillsView",
+        beforeEnter: guardRouteLoggedIn,
         path: "/skills",
       },
       {
         component: WorkingExperienceView,
         name: "WorkingExperienceView",
+        beforeEnter: guardRouteLoggedIn,
         path: "/working-experience",
       },
       {
         component: EducationView,
         name: "EducationView",
+        beforeEnter: guardRouteLoggedIn,
         path: "/education",
       },
       {
         component: BiographyView,
         name: "BiographyView",
+        beforeEnter: guardRouteLoggedIn,
         path: "/biography",
       },
       {
         component: ProfileView,
         name: "ProfileView",
+        beforeEnter: guardRouteLoggedIn,
         path: "/profile/:id",
         props: true,
       },
       {
         component: ExploreConnectionsView,
         name: "ExploreConnectionsView",
+        beforeEnter: guardRouteLoggedIn,
         path: "/explore-connections",
       },
       {
         component: MyConnectionsView,
         name: "MyConnectionsView",
+        beforeEnter: guardRouteLoggedIn,
         path: "/my-connections",
       },
       {
         component: BlockedConnectionsView,
         name: "BlockedConnectionsView",
+        beforeEnter: guardRouteLoggedIn,
         path: "/blocked-accounts",
       },
       {
         component: ConnectionRequestsView,
         name: "ConnectionRequestsView",
+        beforeEnter: guardRouteLoggedIn,
         path: "/connection-requests",
-      },
-      {
-        component: FeedView,
-        name: "FeedView",
-        path: "/feed",
       },
       {
         component: ChatView,
         name: "ChatView",
+        beforeEnter: guardRouteLoggedIn,
         path: "/chat",
         children: [
           {
@@ -111,18 +119,38 @@ const routes = [
       {
         component: NotificationsView,
         name: "NotificationsView",
+        beforeEnter: guardRouteLoggedIn,
         path: "/notifications",
       },
       {
         component: ExploreJobOffersView,
         name: "ExploreJobOffersView",
+        beforeEnter: guardRouteLoggedIn,
         path: "/offers",
       },
       {
         component: JobOfferView,
         name: "JobOfferView",
         path: "/offer/:offerId",
+        beforeEnter: guardRouteLoggedIn,
         props: true,
+      },
+      {
+        component: FeedView,
+        name: "FeedView",
+        beforeEnter: guardRouteLoggedIn,
+        path: "/feed",
+      },
+      {
+        component: PublicProfileView,
+        name: "PublicProfileView",
+        props: true,
+        path: "/posts/:id",
+      },
+      {
+        component: GuestView,
+        name: "GuestView",
+        path: "/",
       },
     ],
   },
