@@ -66,6 +66,14 @@ export default {
       this.showSnackbar = true;
       this.onClick = callback;
     },
+    notification_follow(callback) {
+      this.notification = true;
+      this.color = "primary";
+      this.icon = "mdi-account-plus";
+      this.message = "New user started following you!";
+      this.showSnackbar = true;
+      this.onClick = callback;
+    },
     notification_new_post(callback) {
       this.notification = true;
       this.color = "primary";
