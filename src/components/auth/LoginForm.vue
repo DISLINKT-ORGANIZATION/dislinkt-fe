@@ -119,7 +119,11 @@ export default {
           this.axios.defaults.headers["Authorization"] =
             "Bearer " + response.data.token;
           this.loading = false;
-          this.$router.push({ name: "FeedView" });
+          if (response.data.role === "ROLE_ADMINISTRATOR") {
+            this.$router.push({ name: "EventsView" });
+          } else {
+            this.$router.push({ name: "FeedView" });
+          }
         })
         .catch((response) => {
           this.loading = false;

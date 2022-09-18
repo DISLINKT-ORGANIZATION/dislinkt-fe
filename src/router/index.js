@@ -22,6 +22,7 @@ import ExploreJobOffersView from "@/views/job-offers/ExploreJobOffersView.vue";
 import JobOfferView from "@/views/job-offers/JobOfferView";
 import GuestView from "@/views/GuestView.vue";
 import PublicProfileView from "@/views/PublicProfileView.vue";
+import EventsView from "@/views/events/EventsView.vue";
 
 Vue.use(VueRouter);
 
@@ -152,6 +153,12 @@ const routes = [
         name: "GuestView",
         path: "/",
       },
+      {
+        component: EventsView,
+        name: "EventsView",
+        beforeEnter: guardRouteAdmin,
+        path: "/events",
+      },
     ],
   },
 ];
@@ -169,10 +176,10 @@ function guardRouteLoggedIn(to, from, next) {
   else next(); // allow to enter the route
 }
 
-// function guardRouteAdmin(to, from, next) {
-//   let userRole = localStorage.getItem("role");
-//   if (userRole === "ROLE_ADMIN") next();
-// }
+ function guardRouteAdmin(to, from, next) {
+   let userRole = localStorage.getItem("role");
+   if (userRole === "ROLE_ADMINISTRATOR") next();
+ }
 
 // function guardRouteUser(to, from, next) {
 //   let userRole = localStorage.getItem("role");
