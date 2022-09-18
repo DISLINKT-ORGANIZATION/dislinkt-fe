@@ -156,14 +156,14 @@
           </v-list-item>
         </router-link>
         <v-divider></v-divider>
-        <router-link :to="{ name: 'Home' }" v-slot="{ navigate }">
+        <router-link :to="{ name: 'ExploreJobOffersView' }" v-slot="{ navigate }">
           <v-list-item @click="navigate">
             <v-list-item-icon>
-              <v-icon>mdi-pencil-outline</v-icon>
+              <v-icon>mdi-magnify</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title style="font-size: 18px"
-                >Add New Post</v-list-item-title
+                >Explore offers</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
