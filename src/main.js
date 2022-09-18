@@ -21,7 +21,7 @@ Object.defineProperty(Vue.prototype, "$role", {
 
 // axios config
 Vue.use(VueAxios, Axios);
-Axios.defaults.baseURL = "http://localhost:8081/";
+Axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 Axios.defaults.headers.common["Access-Control-Allow-Credentials"] = "true";
 
 if (localStorage.getItem("token") != null) {
