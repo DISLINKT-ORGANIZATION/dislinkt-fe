@@ -81,6 +81,8 @@ export default {
           return "New comment ";
         case "CONNECTION_REQUEST":
           return "New connection request ";
+        case "NEW_CONNECTION":
+          return "New connection ";
       }
     },
     getNotificationIcon(eventType) {
@@ -95,6 +97,8 @@ export default {
           return "mdi-comment-text-outline";
         case "CONNECTION_REQUEST":
           return "mdi-account-plus-outline";
+        case "NEW_CONNECTION":
+          return "mdi-account-check-outline";
       }
     },
     formatDate(date) {
@@ -130,8 +134,13 @@ export default {
           break;
         case "CONNECTION_REQUEST":
           this.$router.push({
+            name: "ConnectionRequestsView",
+          });
+          break;
+        case "NEW_CONNECTION":
+          this.$router.push({
             name: "ProfileView",
-            params: { id: notification.recipientId },
+            params: { id: notification.senderId },
           });
           break;
       }
