@@ -3,7 +3,7 @@
     <!-- <persona-avatar :size="54" class="avatar" :fullname="'Placeholder Man'" :url="avatar" /> -->
     <v-textarea
       rows="1"
-      placeholder="Add a comment..."
+      :placeholder="userIsLoggedIn() ? 'Add a comment...' : 'Log in to comment!'"
       v-model="message"
       @keydown.prevent.enter="sendMessage()"
       class="chat-field"
@@ -11,7 +11,7 @@
       rounded
       no-resize
     />
-    <v-btn fab color="indigo accent-1" @click="sendMessage()"
+    <v-btn :disabled="!userIsLoggedIn()" fab color="indigo accent-1" @click="sendMessage()"
       ><v-icon class="send-icon">mdi-send</v-icon></v-btn
     >
   </span>
@@ -45,6 +45,9 @@ export default {
   },
   methods: {
     sendMessage: function () {
+      if (!this.userIsLoggedIn()) {
+        return;
+      }
       this.axios
         .post(postCommentApi + this.postId + "/comment", {
           userId: localStorage.getItem("id"),
@@ -63,6 +66,9 @@ export default {
           this.handleCommentAdded(comment);
           this.message = "";
         });
+    },
+    userIsLoggedIn() {
+      return localStorage.getItem("id") !== null;
     },
     getUserInfo() {
       const userId = localStorage.getItem("id");

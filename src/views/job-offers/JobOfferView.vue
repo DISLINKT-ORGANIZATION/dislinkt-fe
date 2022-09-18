@@ -19,10 +19,10 @@
           <div class="description ml-5 mt-5 mb-3">Offer details</div>
           <div class="content ml-5 my-font" v-html="splitDescription(offer.description)">
           </div>
-          <div class="description ml-5 mt-5 mb-3">Company website</div>
+          <div class="description ml-5 mt-5 mb-3">Company details</div>
           <div class="content ml-5 my-font">
             <a :href="offer.companyLink" target="_blank">
-                Check us out on Agent Application!
+                Check out our reviews and comments on Agent Application!
             </a>
           </div>
           <div class="description ml-5 mt-5 mb-3">Position details</div>
