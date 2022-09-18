@@ -119,7 +119,7 @@ export default {
           this.axios.defaults.headers["Authorization"] =
             "Bearer " + response.data.token;
           this.loading = false;
-          this.$router.push({ name: "HomeView" });
+          this.$router.push({ name: "FeedView" });
         })
         .catch((response) => {
           this.loading = false;

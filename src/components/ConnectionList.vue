@@ -60,6 +60,10 @@ export default {
   props: {
     connections: [],
     requestModeEnabled: Boolean,
+    redirectToPublic: {
+      type: Boolean,
+      default: false
+    },
     requestEnabled: {
       type: Boolean,
       default: false,
@@ -89,7 +93,8 @@ export default {
     },
     redirect(id) {
       if (!this.blockedEnabled) {
-        this.$router.push({ name: "ProfileView", params: { id: id } });
+        const redirectPath = this.redirectToPublic ? 'PublicProfileView' : 'ProfileView';
+        this.$router.push({ name: redirectPath, params: { id: id } });
       }
     },
   },

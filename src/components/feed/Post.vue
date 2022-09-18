@@ -1,13 +1,17 @@
 <template>
-  <v-card class="mt-2 mb-2 pa-1 elevation-4" color="white" :width="`${postWidth}%`">
+  <v-card
+    class="mt-2 mb-2 pa-1 elevation-4"
+    color="white"
+    :width="`${postWidth}%`"
+  >
     <v-card-title>
       <v-list-item-avatar>
-        <persona-avatar v-bind:fullname="firstName + ' ' + lastName"/>
+        <persona-avatar v-bind:fullname="firstName + ' ' + lastName" />
       </v-list-item-avatar>
 
       <v-list-item-content>
         <v-list-item-title class="text-h6 my-font">
-          {{firstName}} {{lastName}}
+          {{ firstName }} {{ lastName }}
         </v-list-item-title>
       </v-list-item-content>
     </v-card-title>
@@ -21,20 +25,34 @@
         >{{ this.showFullContent ? "...see less" : "...see more" }}</span
       >
     </v-card-text>
-    <v-img v-if="image" :src="convertImage()"/>
+    <v-img v-if="image" :src="convertImage()" />
     <v-card-actions>
       <v-list-item class="grow">
         <v-row align="center" justify="start">
-          <v-btn class="mr-1" icon @click="thumbsUp()">
+          <v-btn
+            :disabled="!userIsLoggedIn()"
+            class="mr-1"
+            icon
+            @click="thumbsUp()"
+          >
             <v-icon>
-              {{ userLikesPostStatus ? "mdi-thumb-up" : "mdi-thumb-up-outline" }}
+              {{
+                userLikesPostStatus ? "mdi-thumb-up" : "mdi-thumb-up-outline"
+              }}
             </v-icon>
           </v-btn>
           <span class="subheading mr-4">{{ postLikes }}</span>
-          <v-btn class="mr-1" icon @click="thumbsDown()">
+          <v-btn
+            :disabled="!userIsLoggedIn()"
+            class="mr-1"
+            icon
+            @click="thumbsDown()"
+          >
             <v-icon>
               {{
-                userDislikesPostStatus ? "mdi-thumb-down" : "mdi-thumb-down-outline"
+                userDislikesPostStatus
+                  ? "mdi-thumb-down"
+                  : "mdi-thumb-down-outline"
               }}
             </v-icon>
           </v-btn>
@@ -62,7 +80,7 @@
 import PersonaAvatar from "@/components/user/PersonaAvatar.vue";
 import CommentList from "./CommentList.vue";
 
-const postApi = "post-service/posts/"
+const postApi = "post-service/posts/";
 const wrapNumberOfWords = 50;
 
 export default {
@@ -125,8 +143,11 @@ export default {
     this.formattedContent = replacedString;
   },
   methods: {
+    userIsLoggedIn() {
+      return localStorage.getItem("id") !== null;
+    },
     convertImage() {
-      return Buffer.from(this.image, 'base64').toString()
+      return Buffer.from(this.image, "base64").toString();
     },
     renderContent: function () {
       let contentPreFormat = this.formattedContent;
@@ -181,18 +202,17 @@ export default {
       }
     },
     sendReaction(reactionType, deletion) {
-      this.axios.post(
-        postApi + this.id + "/reaction",
-        {
+      this.axios
+        .post(postApi + this.id + "/reaction", {
           userId: localStorage.getItem("id"),
           reaction: reactionType,
-          removeReaction: deletion
-        }
-      ).catch((error) => {
-        console.log(error);
-        this.$root.snackbar.error();
-      })
-    } 
+          removeReaction: deletion,
+        })
+        .catch((error) => {
+          console.log(error);
+          this.$root.snackbar.error();
+        });
+    },
   },
 };
 </script>
