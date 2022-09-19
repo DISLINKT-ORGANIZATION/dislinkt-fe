@@ -92,7 +92,8 @@ export default {
     this.socket = new VueSocketIO({
       debug: true,
       connection:
-        "http://localhost:8186/chat?room=" + localStorage.getItem("id"),
+        // "http://localhost:8186/chat?room=" + localStorage.getItem("id"),
+        "/message-service/chat?room=" + localStorage.getItem("id"),
     });
     this.socket.emitter.addListener("chat", function (data) {
       if (data.senderId != this.recipientId) {
