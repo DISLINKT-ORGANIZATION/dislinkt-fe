@@ -7,9 +7,15 @@
       <v-btn color="white" text v-bind="attrs" @click="showSnackbar = false">
         Close
       </v-btn>
+<<<<<<< Updated upstream
       <v-btn v-if="notification" color="white" text v-bind="attrs" @click="onClickHandler">
         Check
       </v-btn>
+=======
+      <!-- <v-btn v-if="notification" color="white" text v-bind="attrs" @click="onClickHandler">
+        Check
+      </v-btn> -->
+>>>>>>> Stashed changes
     </template>
   </v-snackbar>
 </template>
@@ -24,32 +30,50 @@ export default {
       color: "success",
       icon: "mdi-check",
       timer: 3000,
+<<<<<<< Updated upstream
       onClick: () => {},
       notification: false
+=======
+      // onClick: () => {},
+      // notification: false
+>>>>>>> Stashed changes
     };
   },
   methods: {
     success(message) {
+<<<<<<< Updated upstream
       this.notification = false;
+=======
+      // this.notification = false;
+>>>>>>> Stashed changes
       this.color = "success";
       this.icon = "mdi-check";
       this.message = message || "Successfully finished the operation!";
       this.showSnackbar = true;
     },
     error(message) {
+<<<<<<< Updated upstream
       this.notification = false;
+=======
+      // this.notification = false;
+>>>>>>> Stashed changes
       this.color = "error";
       this.icon = "mdi-close";
       this.message = message || "An error has ocurred!";
       this.showSnackbar = true;
     },
     warning(message) {
+<<<<<<< Updated upstream
       this.notification = false;
+=======
+      // this.notification = false;
+>>>>>>> Stashed changes
       this.color = "warning";
       this.icon = "mdi-alert";
       this.message = message || "An error has ocurred!";
       this.showSnackbar = true;
     },
+<<<<<<< Updated upstream
     notification_message(callback) {
       this.notification = true;
       this.color = "primary";
@@ -102,6 +126,44 @@ export default {
       this.showSnackbar = false;
       this.onClick();
     }
+=======
+    notification_message() {
+      // this.notification = true;
+      this.color = "primary";
+      this.icon = "mdi-message";
+      this.message = "You have received new message!";
+      this.showSnackbar = true;
+      // this.onClick = callback;
+    },
+    notification_connection_request() {
+      // this.notification = true;
+      this.color = "primary";
+      this.icon = "mdi-message";
+      this.message = "You have received new message!";
+      this.showSnackbar = true;
+      // this.onClick = callback;
+    },
+    notification_new_post() {
+      // this.notification = true;
+      this.color = "primary";
+      this.icon = "mdi-message";
+      this.message = "You have received new message!";
+      this.showSnackbar = true;
+      // this.onClick = callback;
+    },
+    notification_post_like() {
+      // this.notification = true;
+      this.color = "primary";
+      this.icon = "mdi-message";
+      this.message = "You have received new message!";
+      this.showSnackbar = true;
+      // this.onClick = callback;
+    },
+    // onClickHandler() {
+    //   this.showSnackbar = false;
+    //   this.onClick();
+    // }
+>>>>>>> Stashed changes
 
   },
 };
