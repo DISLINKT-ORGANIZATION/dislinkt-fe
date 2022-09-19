@@ -11,16 +11,16 @@
         >DISLINKT</v-toolbar-title
       >
       <v-spacer />
-      <template v-if="isLoggedIn() && user.role === 'ROLE_USER'" >
-        <v-btn class="ml-3" icon @click="checkRequests()">
+      <template v-if="isLoggedIn()" >
+        <v-btn v-if="user.role === 'ROLE_USER'" class="ml-3" icon @click="checkRequests()">
           <v-icon>mdi-account-outline</v-icon>
         </v-btn>
-        <router-link :to="{ name: 'ChatView' }" v-slot="{ navigate }">
+        <router-link v-if="user.role === 'ROLE_USER'" :to="{ name: 'ChatView' }" v-slot="{ navigate }">
           <v-btn class="ml-3" icon @click="navigate">
             <v-icon>mdi-message-outline</v-icon>
           </v-btn>
         </router-link>
-        <router-link :to="{ name: 'NotificationsView' }" v-slot="{ navigate }">
+        <router-link v-if="user.role === 'ROLE_USER'" :to="{ name: 'NotificationsView' }" v-slot="{ navigate }">
           <v-btn class="ml-3" icon @click="navigate">
             <v-icon>mdi-bell-outline</v-icon>
           </v-btn>
