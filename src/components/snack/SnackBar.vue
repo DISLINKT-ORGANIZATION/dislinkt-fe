@@ -7,9 +7,11 @@
       <v-btn color="white" text v-bind="attrs" @click="showSnackbar = false">
         Close
       </v-btn>
+
       <v-btn v-if="notification" color="white" text v-bind="attrs" @click="onClickHandler">
         Check
       </v-btn>
+      
     </template>
   </v-snackbar>
 </template>
