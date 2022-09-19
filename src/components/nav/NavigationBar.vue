@@ -167,7 +167,7 @@
             </v-list-item-content>
           </v-list-item>
         </router-link>
-        <v-divider></v-divider>
+        <v-divider v-if="role !== 'ROLE_ADMINISTRATOR'"></v-divider>
         <router-link v-if="role !== 'ROLE_ADMINISTRATOR'" :to="{ name: 'ExploreJobOffersView' }" v-slot="{ navigate }">
           <v-list-item @click="navigate">
             <v-list-item-icon>
